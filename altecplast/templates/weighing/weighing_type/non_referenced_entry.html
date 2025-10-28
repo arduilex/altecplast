@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrée Non Référencée{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Entrée Non Référencée</h2>
+            <a href="{% url 'weighing' %}" class="btn btn-secondary">← Retour</a>
+        </div>
+
+        <form method="post" class="compact-form">
+            {% csrf_token %}
+
+            <!-- Informations de Base -->
+            <div class="form-section">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="weighing_number" class="form-label">Numéro de Pesée</label>
+                            <input type="text" class="form-control" id="weighing_number" name="weighing_number"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="supplier_id_non_referenced" class="form-label">Fournisseur Non Référencé</label>
+                            <input type="text" class="form-control" id="supplier_id_non_referenced"
+                                name="supplier_id_non_referenced" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations Transport -->
+            <div class="form-section">
+                <h4>Informations Transport</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="transporter" class="form-label">Transporteur</label>
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control me-2" id="transporter" name="transporter">
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    onclick="$('#transporter').val('LUI-MEME')">
+                                    🎯
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="origin" class="form-label">Origine</label>
+                            <input type="text" class="form-control" id="origin" name="origin">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="vehicle_type" class="form-label">Type de Véhicule</label>
+                            <select class="form-select" id="vehicle_type" name="vehicle_type">
+                                <option value="">Sélectionner un type</option>
+                                <option value="CAMION 10G">Camion 10G</option>
+                                <option value="CAMION 8G">Camion 8G</option>
+                                <option value="CAMION 6G">Camion 6G</option>
+                                <option value="CAMION 5G">Camion 5G</option>
+                                <option value="CAMIONNETTE">Camionnette</option>
+                                <option value="PICK-UP">Pick-Up</option>
+                                <option value="REMORQUE">Remorque</option>
+                                <option value="CONTENEUR">Conteneur</option>
+                                <option value="TRAFFIC">Traffic</option>
+                                <option value="AUTRE">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="license_plate" class="form-label">Plaque d'Immatriculation</label>
+                            <input type="text" class="form-control" id="license_plate" name="license_plate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculs de Poids -->
+            <div class="form-section weight-calculation">
+                <h4>Calculs de Poids</h4>
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="gross_weight_kg" class="form-label">Poids Brut (kg)</label>
+                            <input type="number" class="form-control" id="gross_weight_kg" name="gross_weight_kg"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="tare_weight" class="form-label">Tare (kg)</label>
+                            <input type="number" class="form-control" id="tare_weight" name="tare_weight" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="net_weight_1_kg" class="form-label">Net 1 (kg)</label>
+                            <input type="number" class="form-control" id="net_weight_1_kg" name="net_weight_1_kg"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="deduction_amount" class="form-label">Déduction</label>
+                            <input type="number" class="form-control" id="deduction_amount" name="deduction_amount"
+                                step="1.0">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="deduction_type" class="form-label">Type</label>
+                            <select class="form-select" id="deduction_type" name="deduction_type">
+                                <option value="%">%</option>
+                                <option value="kg">kg</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="net_weight_2_kg" class="form-label">Net Final (kg)</label>
+                            <input type="number" class="form-control" id="net_weight_2_kg" name="net_weight_2_kg"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations Produit -->
+            <div class="form-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Informations Produit</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product" class="form-label">Produit</label>
+                                    <select class="form-select" id="product" name="product">
+                                        <option value="">Sélectionner un produit</option>
+                                        <option value="PLASTIQUE">Plastique</option>
+                                        <option value="PURGES">Purges</option>
+                                        <option value="CARTON">Carton</option>
+                                        <option value="BOIS">Bois</option>
+                                        <option value="FERREUX">Ferreux</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="form" class="form-label">Forme</label>
+                                    <select class="form-select" id="form" name="form">
+                                        <option value="">Sélectionner une forme</option>
+                                        <option value="DECHET">Déchet</option>
+                                        <option value="BROYE">Broyé</option>
+                                        <option value="GRANULES">Granulés</option>
+                                        <option value="DENSIFIE">Densifié</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product_type" class="form-label">Type de Produit</label>
+                                    <select class="form-select" id="product_type" name="product_type">
+                                        <option value="">Sélectionner un type</option>
+                                        <option value="PELD">PELD</option>
+                                        <option value="PP">PP</option>
+                                        <option value="PET">PET</option>
+                                        <option value="PEHD">PEHD</option>
+                                        <option value="PS CHOC">PS Choc</option>
+                                        <option value="PALETTE">Palette</option>
+                                        <option value="BOIS CASSE">Bois Cassé</option>
+                                        <option value="ALUMINIUM">Aluminium</option>
+                                        <option value="FERRAILLE">Ferraille</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="color_quality" class="form-label">Couleur/Qualité</label>
+                                    <select class="form-select" id="color_quality" name="color_quality">
+                                        <option value="">Sélectionner couleur/qualité</option>
+                                        <option value="BEURRE">Beurre</option>
+                                        <option value="FRAICH">Fraîch</option>
+                                        <option value="SERRE">Serre</option>
+                                        <option value="DOUBLE_FACE">Double Face</option>
+                                        <option value="PAILLAGE">Paillage</option>
+                                        <option value="TRIE BLANC">Trié Blanc</option>
+                                        <option value="TRIE_COULEUR">Trié Couleur</option>
+                                        <option value="TRIE BLANC_COULEUR">Trié Blanc+Couleur</option>
+                                        <option value="POST INDUS PROPRE">Post Indus Propre</option>
+                                        <option value="POST INDUS SALE">Post Indus Sale</option>
+                                        <option value="DECHARGE">Décharge</option>
+                                        <option value="NOIR">Noir</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Emballage</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="packaging" class="form-label">Emballage</label>
+                                    <select class="form-select" id="packaging" name="packaging">
+                                        <option value="">Sélectionner emballage</option>
+                                        <option value="VRAC">Vrac</option>
+                                        <option value="BALLE LOCAL">Balle Local</option>
+                                        <option value="BALLE IMPORT">Balle import</option>
+                                        <option value="COLIS">Colis</option>
+                                        <option value="SAC">Sac</option>
+                                        <option value="BIG_BAG">Big-bag</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="packaging_quantity" class="form-label">Quantité</label>
+                                    <input type="number" class="form-control" id="packaging_quantity"
+                                        name="packaging_quantity">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg">Enregistrer la Pesée</button>
+                    <a href="{% url 'weighing' %}" class="btn btn-secondary btn-lg ms-2">Annuler</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // Calculate net weights automatically
+        function calculateWeights() {
+            var grossWeight = parseFloat($('#gross_weight_kg').val()) || 0;
+            var tareWeight = parseFloat($('#tare_weight').val()) || 0;
+            var deductionAmount = parseFloat($('#deduction_amount').val()) || 0;
+            var deductionType = $('#deduction_type').val();
+
+            // Calculate net weight 1 (gross - tare)
+            var netWeight1 = grossWeight - tareWeight;
+            $('#net_weight_1_kg').val(netWeight1);
+
+            // Calculate net weight 2 (with deduction)
+            var netWeight2 = netWeight1;
+            if (deductionAmount > 0) {
+                if (deductionType === '%') {
+                    // Percentage deduction
+                    netWeight2 = netWeight1 - (netWeight1 * deductionAmount / 100);
+                } else {
+                    // Weight deduction in kg
+                    netWeight2 = netWeight1 - deductionAmount;
+                }
+            }
+            $('#net_weight_2_kg').val(Math.round(netWeight2));
+        }
+
+        // Bind calculation to weight input changes
+        $('#gross_weight_kg, #tare_weight, #deduction_amount, #deduction_type').on('input change', calculateWeights);
+    });
+</script>
+{% endblock %}

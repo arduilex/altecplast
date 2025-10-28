@@ -1,0 +1,1934 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - ALTECPLAST{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h2 class="text-primary mb-0">📊 Dashboard</h2>
+
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="current-month-btn"
+                    onclick="goToCurrentDate()">
+                    📅
+                </button>
+                <input type="month" id="date-selector" name="date-selector" min="2020-03" value="2025-05"
+                    style="width: 130px;">
+            </div>
+
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tab-navigation mb-4">
+            <button class="tab-btn active" onclick="switchTab('today')" id="today-tab">
+                <i class="fas fa-calendar-day me-2"></i>
+                Aujourd'hui
+            </button>
+            <button class="tab-btn" onclick="switchTab('stock')" id="stock-tab">
+                <i class="fas fa-boxes me-2"></i>
+                Stock
+            </button>
+            <button class="tab-btn" onclick="switchTab('production')" id="production-tab">
+                <i class="fas fa-cogs me-2"></i>
+                Production
+            </button>
+            <button class="tab-btn" onclick="switchTab('fournisseur')" id="fournisseur-tab">
+                <i class="fas fa-truck me-2"></i>
+                Fournisseur
+            </button>
+            <button class="tab-btn" onclick="switchTab('client')" id="client-tab">
+                <i class="fas fa-users me-2"></i>
+                Client
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Tab Content: Today Dashboard -->
+<div id="today-content" class="tab-content active">
+    <!-- Section Pesées du Jour -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <h4 id="today" class="mb-0"> ⚖️ Pesées du <span id="today-date-pesee"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="border-bg-dark">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des pesées du jour -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped mb-0" style="font-size: 0.8rem;">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Type</th>
+                                    <!-- <th>Date</th> -->
+                                    <!-- <th>Heure</th> -->
+                                    <!-- <th>N° Pesée</th> -->
+                                    <th>Client/Fournisseur</th>
+                                    <!-- <th>Transporteur</th> -->
+                                    <!-- <th>Immat</th> -->
+                                    <!-- <th>Brut</th> -->
+                                    <!-- <th>Tare</th> -->
+                                    <th>Net 1</th>
+                                    <th>% Enlevé</th>
+                                    <th>Net 2</th>
+                                    <!-- <th>Véhicule</th> -->
+                                    <!-- <th>Origine</th> -->
+                                    <th>Produits</th>
+                                    <th>Type Prod.</th>
+                                    <th>Forme</th>
+                                    <th>Condit.</th>
+                                    <th>Nbr Condt</th>
+                                    <th>Qualité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for type_pesee, rows in daily_wighing.items %}
+                                <!-- En-tête de groupe par type de pesée -->
+                                <tr class="table-info">
+                                    <td colspan="11" class="fw-bold text-center">{{ type_pesee }}</td>
+                                </tr>
+                                <!-- Lignes de données pour ce type -->
+                                {% for row in rows %}
+                                <tr>
+                                    {% for cell in row %}
+                                    <td>{{ cell|default:"-" }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center text-muted">Aucune pesée aujourd'hui</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Production du jour -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <h4 class="text mb-0">🏭 Production du <span id="today-date-prod"></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="border-primary">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau récapitulatif de production -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Récapitulatif de production</h5>
+                </div>
+                <div class="card-body p-2">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered mb-0" style="font-size: 0.9rem;">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th style="width: 20%;">Indicateur</th>
+                                    <th class="text-center" style="width: 40%;">LAVAGE</th>
+                                    <th class="text-center" style="width: 40%;">PREALPINA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold">Production</td>
+                                    <td class="text-center" id="recap-lav-prod">-</td>
+                                    <td class="text-center" id="recap-alp-prod">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Durée</td>
+                                    <td class="text-center" id="recap-lav-nombre-h">-</td>
+                                    <td class="text-center" id="recap-alp-nombre-h">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Heures W</td>
+                                    <td class="text-center" id="recap-lav-heure-w">-</td>
+                                    <td class="text-center" id="recap-alp-heure-w">-</td>
+                                </tr>
+                            </tbody>
+                            <tbody id="recap-arrets-tbody">
+                                <!-- Les arrêts seront insérés dynamiquement ici -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Matières Premières -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <h4 class="text mb-0">📦 Matières Premières du <span id="today-date-mp"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="border-primary">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grille 2x2 des tableaux MP -->
+    <div class="row mb-4">
+        <!-- Triage MP Souple -->
+        <div class="col-lg-6 col-md-6 mb-3">
+            <div class="card border-info h-100">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0 fw-bold">🔵 Triage MP Souple</h6>
+                </div>
+                <div class="card-body p-2">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover mb-0" style="font-size: 0.85rem;">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="text-end">Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recap-mp-souple">
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Triage MP Rigide -->
+        <div class="col-lg-6 col-md-6 mb-3">
+            <div class="card border-warning h-100">
+                <div class="card-header bg-warning text-white">
+                    <h6 class="mb-0 fw-bold">🟡 Triage MP Rigide</h6>
+                </div>
+                <div class="card-body p-2">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover mb-0" style="font-size: 0.85rem;">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="text-end">Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recap-mp-rigide">
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MP Broyé -->
+        <div class="col-lg-6 col-md-6 mb-3">
+            <div class="card border-success h-100">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0 fw-bold">🟢 MP Broyé</h6>
+                </div>
+                <div class="card-body p-2">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover mb-0" style="font-size: 0.85rem;">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="text-end">Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recap-mp-broye">
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MP Densifié -->
+        <div class="col-lg-6 col-md-6 mb-3">
+            <div class="card border-danger h-100">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0 fw-bold">🔴 MP Densifié</h6>
+                </div>
+                <div class="card-body p-2">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-bordered table-hover mb-0" style="font-size: 0.85rem;">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="text-end">Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recap-mp-densifie">
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">Aucune donnée</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Tab Content: Stock Dashboard -->
+<div id="stock-content" class="tab-content">
+    <!-- Section Stock du jour -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <h4 class="text mb-0">📦 Stock du <span id="today-date-stock"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="border-bg-dark">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques récapitulatifs du stock -->
+    <div class="row mb-4">
+        <div class="col-lg-6 col-md-12">
+            <div id="stock-densifie-container"></div>
+        </div>
+
+        <div class="col-lg-6 col-md-12">
+            <div id="stock-granule-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab Content: Production Dashboard -->
+<div id="production-content" class="tab-content">
+    <!-- Section Production -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="text-warning d-flex align-items-center">
+                <h4 class=" mb-0">🫧 Lavage - <span id="month-production-lav"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section LAVAGE -->
+    <div class="row mb-4">
+        <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-white text-center">
+                    <h5 class="mb-0">Tableau recapitulatif</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0 production-table">
+                            <tbody>
+                                <!-- Ligne 1 : En-tête Production -->
+                                <tr>
+                                    <th class="bg-light text-center">Production J</th>
+                                    <th class="bg-light text-center">Production N</th>
+                                    <th class="bg-light text-center">$$ Production</th>
+                                </tr>
+                                <!-- Ligne 2 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="lav-prod-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="lav-prod-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="lav-prod-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 3 : En-tête Heure W -->
+                                <tr>
+                                    <th class="bg-light text-center">Heure W J</th>
+                                    <th class="bg-light text-center">Heure W N</th>
+                                    <th class="bg-light text-center">$$ Heure W</th>
+                                </tr>
+                                <!-- Ligne 4 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="lav-heure-w-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="lav-heure-w-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="lav-heure-w-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 5 : En-tête Kg/h -->
+                                <tr>
+                                    <th class="bg-light text-center">Kg/h J</th>
+                                    <th class="bg-light text-center">Kg/h N</th>
+                                    <th class="bg-light text-center">$$ Kg/h</th>
+                                </tr>
+                                <!-- Ligne 6 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="lav-kgh-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="lav-kgh-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="lav-kgh-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 7 : En-tête Arrêt MP -->
+                                <tr>
+                                    <th class="bg-light text-center">Arrêt MP J</th>
+                                    <th class="bg-light text-center">Arrêt MP N</th>
+                                    <th class="bg-light text-center">$$ Arrêt MP</th>
+                                </tr>
+                                <!-- Ligne 8 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="lav-arret-mp-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="lav-arret-mp-nuit">-
+                                    </td>
+                                    <td class="text-center fw-bold bg-white" id="lav-arret-mp-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 9 : En-tête Arrêt Maintenance + Arrêt Nettoyage -->
+                                <tr>
+                                    <th class="bg-light text-center">Arrêt Maintenance J</th>
+                                    <th class="bg-light text-center">Arrêt Maintenance N</th>
+                                    <th class="bg-light text-center">$$ Arrêt Nettoyage</th>
+                                </tr>
+                                <!-- Ligne 10 : Valeurs Jour / Nuit / Arrêt Nettoyage -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="lav-arret-maintenance-jour">-
+                                    </td>
+                                    <td class="text-center fw-bold bg-secondary text-white"
+                                        id="lav-arret-maintenance-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="lav-arret-nettoyage">-</td>
+                                </tr>
+
+                                <!-- Ligne 11 : En-tête Purge + Total NC -->
+                                <tr>
+                                    <th class="bg-light text-center">Purge J</th>
+                                    <th class="bg-light text-center">Purge N</th>
+                                    <th class="bg-light text-center">$$ NC</th>
+                                </tr>
+                                <!-- Ligne 12 : Valeurs Jour / Nuit / NC -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="lav-purge-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="lav-purge-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="lav-total-nc">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camembert LAVAGE -->
+        <div class="col-lg-6 col-md-12">
+            <div id="lav-chart-container"></div>
+        </div>
+    </div>
+
+    <!-- Section PREALPINA -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="text-success d-flex align-items-center">
+                <h4 class=" mb-0">🏭 Prealpina - <span id="month-production-alp"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white text-center">
+                    <h5 class="mb-0">Tableau récapitulatif</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0 production-table">
+                            <tbody>
+                                <!-- Ligne 1 : En-tête Production -->
+                                <tr>
+                                    <th class="bg-light text-center">Production J</th>
+                                    <th class="bg-light text-center">Production N</th>
+                                    <th class="bg-light text-center">$$ Production</th>
+                                </tr>
+                                <!-- Ligne 2 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="alp-prod-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="alp-prod-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="alp-prod-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 3 : En-tête Heure W -->
+                                <tr>
+                                    <th class="bg-light text-center">Heure W J</th>
+                                    <th class="bg-light text-center">Heure W N</th>
+                                    <th class="bg-light text-center">$$ Heure W</th>
+                                </tr>
+                                <!-- Ligne 4 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="alp-heure-w-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="alp-heure-w-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="alp-heure-w-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 5 : En-tête Kg/h -->
+                                <tr>
+                                    <th class="bg-light text-center">Kg/h J</th>
+                                    <th class="bg-light text-center">Kg/h N</th>
+                                    <th class="bg-light text-center">$$ Kg/h</th>
+                                </tr>
+                                <!-- Ligne 6 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="alp-kgh-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="alp-kgh-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="alp-kgh-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 7 : En-tête Arrêt MP -->
+                                <tr>
+                                    <th class="bg-light text-center">Arrêt MP J</th>
+                                    <th class="bg-light text-center">Arrêt MP N</th>
+                                    <th class="bg-light text-center">$$ Arrêt MP</th>
+                                </tr>
+                                <!-- Ligne 8 : Valeurs Jour / Nuit / Total -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="alp-arret-mp-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="alp-arret-mp-nuit">-
+                                    </td>
+                                    <td class="text-center fw-bold bg-white" id="alp-arret-mp-total">-</td>
+                                </tr>
+
+                                <!-- Ligne 9 : En-tête Arrêt Maintenance + Arrêt Nettoyage -->
+                                <tr>
+                                    <th class="bg-light text-center">Arrêt Maintenance J</th>
+                                    <th class="bg-light text-center">Arrêt Maintenance N</th>
+                                    <th class="bg-light text-center">$$ Arrêt Nettoyage</th>
+                                </tr>
+                                <!-- Ligne 10 : Valeurs Jour / Nuit / Arrêt Nettoyage -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="alp-arret-maintenance-jour">-
+                                    </td>
+                                    <td class="text-center fw-bold bg-secondary text-white"
+                                        id="alp-arret-maintenance-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="alp-arret-nettoyage">-</td>
+                                </tr>
+
+                                <!-- Ligne 11 : En-tête Purge + Total NC -->
+                                <tr>
+                                    <th class="bg-light text-center">Purge J</th>
+                                    <th class="bg-light text-center">Purge N</th>
+                                    <th class="bg-light text-center">$$ NC</th>
+                                </tr>
+                                <!-- Ligne 12 : Valeurs Jour / Nuit / NC -->
+                                <tr>
+                                    <td class="text-center fw-bold bg-warning-soft" id="alp-purge-jour">-</td>
+                                    <td class="text-center fw-bold bg-secondary text-white" id="alp-purge-nuit">-</td>
+                                    <td class="text-center fw-bold bg-white" id="alp-total-nc">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camembert PREALPINA -->
+        <div class="col-lg-6 col-md-12">
+            <div id="alp-chart-container"></div>
+        </div>
+    </div>
+
+    <!-- Section MATIERE PREMIERE -->
+     <div class="row mb-3">
+        <div class="col-12">
+            <div class="text-danger d-flex align-items-center">
+                <h4 class=" mb-0">🪨 Triage - <span id="month-production-tri"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <!-- Camembert MATIERE PREMIERE avec tableau intégré -->
+        <div class="col-12">
+            <div id="mp-chart-container"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab Content: Fournisseur Dashboard -->
+<div id="fournisseur-content" class="tab-content">
+    <!-- Section Fournisseurs -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <h4 class="text-success mb-0">📊 Fournisseurs - <span id="month-fournisseur"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="border-success">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container en 2 colonnes : Poids | Prix -->
+    <div class="row g-3">
+        <!-- Colonne POIDS (Kg) -->
+        <div class="col-lg-6">
+            <div class="mb-2">
+                <h5 class="text-success">⚖️ Poids (Kg)</h5>
+            </div>
+            <div id="fournisseur-kg-charts-container" class="charts-wrapper">
+                <!-- Les graphiques seront générés dynamiquement ici -->
+            </div>
+        </div>
+
+        <!-- Colonne PRIX (MAD) -->
+        <div class="col-lg-6">
+            <div class="mb-2">
+                <h5 class="text-primary">💰 Prix (MAD)</h5>
+            </div>
+            <div id="fournisseur-mad-charts-container" class="charts-wrapper">
+                <!-- Les graphiques seront générés dynamiquement ici -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab Content: Client Dashboard -->
+<div id="client-content" class="tab-content">
+    <!-- Section Clients -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex align-items-center">
+                <h4 class="text-success mb-0">📊 Clients - <span id="month-client"></span></h4>
+                <div class="flex-grow-1 ms-3">
+                    <hr class="border-success">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container en 2 colonnes : Poids | Prix -->
+    <div class="row g-3">
+        <!-- Colonne POIDS (Kg) -->
+        <div class="col-lg-6">
+            <div class="mb-2">
+                <h5 class="text-success">⚖️ Poids (Kg)</h5>
+            </div>
+            <div id="client-kg-charts-container" class="charts-wrapper">
+                <!-- Les graphiques seront générés dynamiquement ici -->
+            </div>
+        </div>
+
+        <!-- Colonne PRIX (MAD) -->
+        <div class="col-lg-6">
+            <div class="mb-2">
+                <h5 class="text-primary">💰 Prix (MAD)</h5>
+            </div>
+            <div id="client-mad-charts-container" class="charts-wrapper">
+                <!-- Les graphiques seront générés dynamiquement ici -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Chart.js for pie charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    /* Styles pour les onglets */
+    .tab-navigation {
+        display: flex;
+        gap: 10px;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 0;
+        margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        color: #6c757d;
+        padding: 12px 24px;
+        border-radius: 8px 8px 0 0;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: none;
+        margin-bottom: -2px;
+    }
+
+    .tab-btn:hover {
+        background: #e9ecef;
+        color: #495057;
+        transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+        background: #ffffff;
+        border-color: #0d6efd;
+        color: #0d6efd;
+        box-shadow: 0 -2px 8px rgba(13, 110, 253, 0.15);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive design pour les onglets */
+    @media (max-width: 768px) {
+        .tab-navigation {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            border-radius: 8px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+    }
+
+    /* Styles pour les camemberts */
+    .chart-container {
+        width: 250px;
+        height: 250px;
+        position: relative;
+    }
+
+    .chart-container canvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    /* Container compact pour les pie charts côte à côte */
+    .chart-container-compact {
+        width: 160px;
+        height: 160px;
+        position: relative;
+    }
+
+    .chart-container-compact canvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    /* Container large pour les pie charts avec tableau en dessous */
+    .chart-container-large {
+        width: 280px;
+        height: 280px;
+        position: relative;
+    }
+
+    .chart-container-large canvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .chart-card-compact {
+        margin-bottom: 0.5rem;
+    }
+
+    .table-compact-wrapper {
+        max-height: 180px;
+        overflow-y: auto;
+        font-size: 0.75rem;
+    }
+
+    .table-compact-wrapper .table {
+        margin-bottom: 0;
+    }
+
+    .table-large-wrapper {
+        max-height: 220px;
+        overflow-y: auto;
+        font-size: 0.85rem;
+    }
+
+    .table-large-wrapper .table {
+        margin-bottom: 0;
+    }
+
+    .charts-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Hauteur fixe pour toutes les cartes des graphiques */
+    .charts-wrapper .card {
+        height: 620px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .charts-wrapper .card-body {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    /* Hauteur fixe UNIQUEMENT pour les pie charts de droite (Production) */
+    #production-content #lav-chart-container .card,
+    #production-content #alp-chart-container .card {
+        height: 543px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #production-content #lav-chart-container .card-body,
+    #production-content #alp-chart-container .card-body {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    /* Styles pour les camemberts de production (plus grands) */
+    .chart-container-production {
+        width: 350px;
+        height: 350px;
+        position: relative;
+    }
+
+    .chart-container-production canvas {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    @media (max-width: 992px) {
+        .chart-container-production {
+            width: 280px;
+            height: 280px;
+        }
+
+        /* Sur tablette, augmenter un peu la taille des charts compacts */
+        .chart-container-compact {
+            width: 180px;
+            height: 180px;
+        }
+
+        /* Sur tablette, réduire légèrement la taille des charts large */
+        .chart-container-large {
+            width: 250px;
+            height: 250px;
+        }
+
+        .table-compact-wrapper {
+            max-height: 200px;
+        }
+
+        .table-large-wrapper {
+            max-height: 200px;
+        }
+    }
+
+    /* Mobile : affichage vertical */
+    @media (max-width: 768px) {
+
+        /* Les colonnes Poids/Prix deviennent verticales */
+        .charts-wrapper {
+            width: 100%;
+        }
+
+        /* Augmenter la taille sur mobile pour une meilleure lisibilité */
+        .chart-container-compact {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        /* Charts large sur mobile */
+        .chart-container-large {
+            width: 240px;
+            height: 240px;
+            margin: 0 auto;
+        }
+
+        .table-compact-wrapper {
+            max-height: 250px;
+            font-size: 0.8rem;
+        }
+
+        .table-large-wrapper {
+            max-height: 250px;
+            font-size: 0.85rem;
+        }
+
+        /* Ajuster la mise en page du graphique sur mobile */
+        .chart-card-compact .row {
+            flex-direction: column;
+        }
+
+        .chart-card-compact .col-5,
+        .chart-card-compact .col-7 {
+            width: 100% !important;
+            max-width: 100%;
+        }
+    }
+
+    /* Styles pour les tableaux des camemberts */
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Style pour les en-têtes de tableau sticky */
+    .sticky-top {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    /* Styles pour les tableaux de production */
+    .production-table {
+        font-size: 0.9rem;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .production-table th,
+    .production-table td {
+        padding: 10px;
+        vertical-align: middle;
+        width: 33.33%;
+    }
+
+    .production-table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .production-table tbody th {
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    /* Couleur jaune douce pour le jour */
+    .bg-warning-soft {
+        background-color: #fff3cd !important;
+    }
+
+    /* Responsive pour les tableaux de production */
+    @media (max-width: 768px) {
+        .production-table {
+            font-size: 0.75rem;
+        }
+
+        .production-table th,
+        .production-table td {
+            padding: 6px;
+        }
+    }
+
+</style>
+
+<script>
+    // Variables globales pour les graphiques
+    const charts = {}; // Stockage centralisé de tous les graphiques
+
+    // Palette de couleurs pour les camemberts
+    const chartColors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#845EC2','#FF9671','#00C9A7','#C34A36','#FFC75F','#0081CF',
+    '#A178DF','#FF8066','#2C73D2','#D65DB1','#9B5DE5','#00C2A8','#F9F871','#FFB6B9','#3EDBF0','#6A2C70'];
+
+
+    /**
+     * FONCTION UNIVERSELLE pour créer des blocs pie chart complets avec:
+     * - Total affiché en haut
+     * - Pie Chart compact
+     * - Tableau structuré (Label | Valeur | Pourcentage)
+     *
+     * Cette fonction remplace generateDynamicCharts + createCustomLegend
+     *
+     * @param {string} containerId - ID du conteneur où insérer les blocs
+     * @param {object} data - Données groupées {typePesee: {label: valeur}}
+     * @param {string} unit - Unité (Kg, MAD, etc.)
+     * @param {string} borderColor - Couleur de bordure Bootstrap (success, primary, danger, etc.)
+     * @param {string} bgColor - Couleur de fond Bootstrap
+     * @param {string} titleTemplate - Template du titre avec {typePesee} comme placeholder
+     * @param {array} colors - Palette de couleurs personnalisées (optionnel, par défaut chartColors)
+     */
+    function createUniversalPieChartBlocks(containerId, data, unit, borderColor, bgColor, titleTemplate = 'Répartition des <u>{typePesee}</u> par Type ({unit})', colors = null) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            console.warn(`Container ${containerId} not found`);
+            return;
+        }
+
+        // Vider le container
+        container.innerHTML = '';
+
+        // Vérifier si les données existent
+        if (!data || Object.keys(data).length === 0) {
+            container.innerHTML = '<div class="col-12"><p class="text-center text-muted">Aucune donnée disponible</p></div>';
+            return;
+        }
+
+        // Parcourir chaque type_pesee et créer un bloc
+        Object.entries(data).forEach(([typePesee, items], index) => {
+            // Générer des IDs uniques
+            const uniqueId = `chart-${containerId}-${index}-${Date.now()}`;
+            const chartId = `${uniqueId}-canvas`;
+            const tableId = `${uniqueId}-table`;
+
+            // Utiliser les couleurs personnalisées si fournies, sinon chartColors
+            const colorsToUse = colors || chartColors;
+
+            // Créer un mapping des labels vers leurs couleurs (avant tri)
+            const originalLabels = Object.keys(items);
+            const colorMapping = {};
+            originalLabels.forEach((label, idx) => {
+                colorMapping[label] = colorsToUse[idx % colorsToUse.length];
+            });
+
+            // Convertir en valeurs absolues et trier par ordre décroissant
+            const sortedEntries = Object.entries(items)
+                .map(([label, value]) => [label, Math.abs(value)])
+                .sort((a, b) => b[1] - a[1]);
+            const labels = sortedEntries.map(entry => entry[0]);
+            const values = sortedEntries.map(entry => entry[1]);
+
+            // Réordonner les couleurs selon le tri des labels
+            const sortedColors = labels.map(label => colorMapping[label]);
+
+            const total = values.reduce((a, b) => a + b, 0);
+
+            // Générer le titre
+            const title = titleTemplate.replace('{typePesee}', typePesee).replace('{unit}', unit);
+
+            // Créer la structure HTML compacte
+            const blockHTML = `
+                <div class="mb-3">
+                    <div class="card border-${borderColor} chart-card-compact">
+                        <div class="card-header bg-${bgColor} text-white py-2">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-chart-pie me-1"></i>
+                                ${title}
+                            </h6>
+                        </div>
+                        <div class="card-body p-3">
+                            <!-- Pie Chart en haut, centré et plus grand -->
+                            <div class="d-flex justify-content-center mb-3">
+                                <div class="chart-container-large">
+                                    <canvas id="${chartId}"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Total en bas, aligné à gauche -->
+                            <div class="mb-2 text-start">
+                                <h6 class="text-${borderColor} mb-0 fw-bold">
+                                    TOTAL: ${total.toLocaleString('fr-FR')} ${unit}
+                                </h6>
+                            </div>
+
+                            <!-- Tableau en dessous -->
+                            <div class="table-responsive table-large-wrapper">
+                                <table class="table table-sm table-hover table-bordered mb-0" id="${tableId}">
+                                    <thead class="table-light position-sticky" style="top: 0; z-index: 2;">
+                                        <tr>
+                                            <th style="width: 25px;"></th>
+                                            <th style="font-size: 0.85rem;">Type</th>
+                                            <th class="text-end" style="font-size: 0.85rem;">Valeur</th>
+                                            <th class="text-end" style="font-size: 0.85rem;">%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', blockHTML);
+
+            // Créer le pie chart et remplir le tableau après insertion dans le DOM
+            setTimeout(() => {
+                const canvas = document.getElementById(chartId);
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+
+                // Créer le graphique
+                charts[chartId] = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: sortedColors,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false  // On utilise le tableau
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: () => '',
+                                    label: function (context) {
+                                        const value = context.parsed;
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${context.label}: ${value.toLocaleString('fr-FR')} ${unit} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        layout: {
+                            padding: 10
+                        }
+                    }
+                });
+
+                // Remplir le tableau
+                const tbody = document.querySelector(`#${tableId} tbody`);
+                if (tbody) {
+                    labels.forEach((label, idx) => {
+                        const value = values[idx];
+                        const percentage = ((value / total) * 100).toFixed(1);
+
+                        const row = document.createElement('tr');
+                        row.style.cursor = 'pointer';
+                        row.style.transition = 'all 0.2s';
+                        row.innerHTML = `
+                            <td class="text-center p-2">
+                                <div style="background-color: ${sortedColors[idx]}; width: 16px; height: 16px; border-radius: 3px; display: inline-block;"></div>
+                            </td>
+                            <td class="fw-semibold p-2" style="font-size: 0.85rem;">${label}</td>
+                            <td class="text-end p-2" style="font-size: 0.85rem;">${value.toLocaleString('fr-FR')} ${unit}</td>
+                            <td class="text-end fw-bold text-${borderColor} p-2" style="font-size: 0.85rem;">${percentage}%</td>
+                        `;
+
+                        // Interaction pour masquer/afficher
+                        row.addEventListener('click', function () {
+                            const chart = charts[chartId];
+                            if (!chart) return;
+
+                            const meta = chart.getDatasetMeta(0);
+                            const item = meta.data[idx];
+
+                            // Toggle visibilité
+                            item.hidden = !item.hidden;
+
+                            // Style de la ligne
+                            if (item.hidden) {
+                                row.style.opacity = '0.4';
+                                row.style.textDecoration = 'line-through';
+                            } else {
+                                row.style.opacity = '1';
+                                row.style.textDecoration = 'none';
+                            }
+
+                            chart.update();
+                        });
+
+                        // Hover effect
+                        row.addEventListener('mouseenter', function () {
+                            if (!this.style.textDecoration.includes('line-through')) {
+                                this.style.backgroundColor = '#f8f9fa';
+                            }
+                        });
+
+                        row.addEventListener('mouseleave', function () {
+                            this.style.backgroundColor = '';
+                        });
+
+                        tbody.appendChild(row);
+                    });
+                }
+            }, 0);
+        });
+    }
+
+    // Fonction pour changer d'onglet
+    function switchTab(tabName) {
+        // Masquer tous les contenus
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // Retirer la classe active de tous les boutons
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        // Afficher le contenu sélectionné
+        const selectedContent = document.getElementById(tabName + '-content');
+        if (selectedContent) {
+            selectedContent.classList.add('active');
+        }
+
+        // Activer le bouton sélectionné
+        const selectedButton = document.getElementById(tabName + '-tab');
+        if (selectedButton) {
+            selectedButton.classList.add('active');
+        }
+
+        // Sauvegarder la préférence dans localStorage
+        localStorage.setItem('dashboardActiveTab', tabName);
+    }
+
+    // Fonction pour aller au mois en cours
+    function goToCurrentDate() {
+        const now = new Date();
+        const currentMonth = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        const dateSelector = document.getElementById('date-selector');
+
+        if (dateSelector) {
+            dateSelector.value = currentMonth;
+            // Charger les données du mois courant
+            loadExcelData(currentMonth);
+
+            // Sauvegarder la préférence
+            localStorage.setItem('dashboardSelectedDate', currentMonth);
+        }
+    }
+
+    // Fonction pour obtenir le nom du mois en français
+    function getMonthName(dateString) {
+        const [year, month] = dateString.split('-');
+        const date = new Date(year, parseInt(month) - 1, 1);
+        return date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    }
+
+    // Fonction pour mettre à jour tous les titres de mois
+    function updateMonthTitles(dateString) {
+
+        const monthName = getMonthName(dateString);
+
+        // Mettre à jour tous les spans de mois
+        const monthElements = [
+            'month-fournisseur',
+            'month-client',
+            'month-production-lav',
+            'month-production-alp',
+            'month-production-tri',
+
+        ];
+
+        monthElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = monthName;
+            }
+        });
+    }
+
+    // Fonction pour recharger les données du dashboard selon le mois sélectionné
+    function loadExcelData(date) {
+        // Faire un appel AJAX pour récupérer les données du mois
+        fetch(`/dashboard/data/?date=${date}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Fichier non trouvé');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Vérifier si les données sont valides
+                if (data.error) {
+                    alert('Fichier Excel introuvable');
+                    return;
+                }
+                console.log(data);
+                // Mettre à jour les titres avec le nom du mois SEULEMENT si les données sont chargées avec succès
+                updateMonthTitles(date);
+
+                // Sauvegarder la date des données affichées
+                localStorage.setItem('dashboardCurrentDate', date);
+
+                // Générer dynamiquement les graphiques pour Fournisseur (Kg) - VERT
+                if (data.fournisseur.kg && Object.keys(data.fournisseur.kg).length > 0) {
+                    createUniversalPieChartBlocks(
+                        'fournisseur-kg-charts-container',
+                        data.fournisseur.kg,
+                        'Kg',
+                        'success',
+                        'success',
+                    );
+                }
+
+                // Générer dynamiquement les graphiques pour Fournisseur (MAD) - BLEU
+                if (data.fournisseur.mad && Object.keys(data.fournisseur.mad).length > 0) {
+                    createUniversalPieChartBlocks(
+                        'fournisseur-mad-charts-container',
+                        data.fournisseur.mad,
+                        'MAD',
+                        'primary',
+                        'primary',
+                    );
+                }
+
+                // Générer dynamiquement les graphiques pour Client (Kg) - VERT
+                if (data.client.kg && Object.keys(data.client.kg).length > 0) {
+                    createUniversalPieChartBlocks(
+                        'client-kg-charts-container',
+                        data.client.kg,
+                        'Kg',
+                        'success',
+                        'success',
+                    );
+                }
+
+                // Générer dynamiquement les graphiques pour Client (MAD) - BLEU
+                if (data.client.mad && Object.keys(data.client.mad).length > 0) {
+                    createUniversalPieChartBlocks(
+                        'client-mad-charts-container',
+                        data.client.mad,
+                        'MAD',
+                        'primary',
+                        'primary',
+                    );
+                }
+
+                // Mettre à jour les données de production
+                updateProductionData(data.production || {});
+
+                // Mettre à jour le tableau des pesées du jour
+                updateDailyWeighingTable(data.today.pesage || {});
+
+                // Mettre à jour le tableau de production du jour
+                updateDailyProdTable(data.today.prod || {});
+
+                // Mettre à jour le tableau de stock du jour
+                updateDailyStockTable(data.today.stock || {});
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des données:', error);
+                alert('Fichier Excel introuvable');
+
+                // Restaurer le sélecteur de date à la dernière date valide
+                const lastValidDate = localStorage.getItem('dashboardCurrentDate');
+                const dateSelector = document.getElementById('date-selector');
+                if (lastValidDate && dateSelector) {
+                    dateSelector.value = lastValidDate;
+                }
+            });
+    }
+
+    // Fonction pour mettre à jour les données de production
+    function updateProductionData(prodData) {
+        // Helper pour afficher une valeur ou "-"
+        const displayValue = (value) => {
+            if (value === null || value === undefined || value === '' || value === 0) return '-';
+            if (typeof value === 'number') return value.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return value;
+        };
+
+        // Section LAVAGE
+        if (prodData.lavage) {
+            const lav = prodData.lavage;
+            // Total production
+            document.getElementById('lav-prod-jour').textContent = displayValue(lav.prod_jour);
+            document.getElementById('lav-prod-nuit').textContent = displayValue(lav.prod_nuit);
+            document.getElementById('lav-prod-total').textContent = displayValue(lav.prod_total);
+
+            // Heure W
+            document.getElementById('lav-heure-w-jour').textContent = displayValue(lav.heure_w_jour);
+            document.getElementById('lav-heure-w-nuit').textContent = displayValue(lav.heure_w_nuit);
+            document.getElementById('lav-heure-w-total').textContent = displayValue(lav.heure_w_total);
+
+            // Kg/h
+            document.getElementById('lav-kgh-jour').textContent = displayValue(lav.kgh_jour);
+            document.getElementById('lav-kgh-nuit').textContent = displayValue(lav.kgh_nuit);
+            document.getElementById('lav-kgh-total').textContent = displayValue(lav.kgh_total);
+
+            // Arrêt MP
+            const lavArretMpJour = parseFloat(lav.arret_mp_jour) || 0;
+            const lavArretMpNuit = parseFloat(lav.arret_mp_nuit) || 0;
+            let lavArretMpTotal = lavArretMpJour + lavArretMpNuit;
+            if (lavArretMpTotal > 0) {
+                lavArretMpTotal = lavArretMpTotal + " h";
+            } else {
+                lavArretMpTotal = "";
+            }
+
+            document.getElementById('lav-arret-mp-jour').textContent = displayValue(lav.arret_mp_jour);
+            document.getElementById('lav-arret-mp-nuit').textContent = displayValue(lav.arret_mp_nuit);
+            document.getElementById('lav-arret-mp-total').textContent = displayValue(lavArretMpTotal);
+
+            // Arrêt Maintenance + Arrêt Nettoyage
+            document.getElementById('lav-arret-maintenance-jour').textContent = displayValue(lav.arret_maintenance_jour);
+            document.getElementById('lav-arret-maintenance-nuit').textContent = displayValue(lav.arret_maintenance_nuit);
+            document.getElementById('lav-arret-nettoyage').textContent = displayValue(lav.arret_nettoyage);
+
+            // Purge + Total NC
+            document.getElementById('lav-purge-jour').textContent = displayValue(lav.purge_jour);
+            document.getElementById('lav-purge-nuit').textContent = displayValue(lav.purge_nuit);
+            document.getElementById('lav-total-nc').textContent = displayValue(lav.total_nc);
+        }
+
+        // Section PREALPINA
+        if (prodData.prealpina) {
+            const alp = prodData.prealpina;
+            // Total production
+            document.getElementById('alp-prod-jour').textContent = displayValue(alp.prod_jour);
+            document.getElementById('alp-prod-nuit').textContent = displayValue(alp.prod_nuit);
+            document.getElementById('alp-prod-total').textContent = displayValue(alp.prod_total);
+
+            // Heure W
+            document.getElementById('alp-heure-w-jour').textContent = displayValue(alp.heure_w_jour);
+            document.getElementById('alp-heure-w-nuit').textContent = displayValue(alp.heure_w_nuit);
+            document.getElementById('alp-heure-w-total').textContent = displayValue(alp.heure_w_total);
+
+            // Kg/h
+            document.getElementById('alp-kgh-jour').textContent = displayValue(alp.kgh_jour);
+            document.getElementById('alp-kgh-nuit').textContent = displayValue(alp.kgh_nuit);
+            document.getElementById('alp-kgh-total').textContent = displayValue(alp.kgh_total);
+
+            // Arrêt MP
+            const alpArretMpJour = parseFloat(alp.arret_mp_jour) || 0;
+            const alpArretMpNuit = parseFloat(alp.arret_mp_nuit) || 0;
+            const alpArretMpTotal = alpArretMpJour + alpArretMpNuit;
+
+            document.getElementById('alp-arret-mp-jour').textContent = displayValue(alp.arret_mp_jour);
+            document.getElementById('alp-arret-mp-nuit').textContent = displayValue(alp.arret_mp_nuit);
+            document.getElementById('alp-arret-mp-total').textContent = displayValue(alpArretMpTotal);
+
+            // Arrêt Maintenance + Arrêt Nettoyage
+            document.getElementById('alp-arret-maintenance-jour').textContent = displayValue(alp.arret_maintenance_jour);
+            document.getElementById('alp-arret-maintenance-nuit').textContent = displayValue(alp.arret_maintenance_nuit);
+            document.getElementById('alp-arret-nettoyage').textContent = displayValue(alp.arret_nettoyage);
+
+            // Purge + Total NC
+            document.getElementById('alp-purge-jour').textContent = displayValue(alp.purge_jour);
+            document.getElementById('alp-purge-nuit').textContent = displayValue(alp.purge_nuit);
+            document.getElementById('alp-total-nc').textContent = displayValue(alp.total_nc);
+        }
+
+        // Créer les camemberts de production avec la fonction universelle
+
+        // Camembert LAVAGE - Répartition par couleur
+        if (prodData.lavage && prodData.lavage.diagram && prodData.lavage.diagram.data) {
+            createUniversalPieChartBlocks(
+                'lav-chart-container',
+                { 'Répartition du <u>densifé</u> par couleur (kg)': prodData.lavage.diagram.data },
+                'Kg',
+                'warning',
+                'warning',
+                '{typePesee}',
+                prodData.lavage.diagram.colors || chartColors  // Couleurs personnalisées
+            );
+        }
+
+        // Camembert PREALPINA - Répartition par couleur
+        if (prodData.prealpina && prodData.prealpina.diagram && prodData.prealpina.diagram.data) {
+            createUniversalPieChartBlocks(
+                'alp-chart-container',
+                { 'Répartition du <u>granulé</u> par couleur (kg)': prodData.prealpina.diagram.data },
+                'Kg',
+                'success',
+                'success',
+                '{typePesee}',
+                prodData.prealpina.diagram.colors || chartColors  // Couleurs personnalisées
+            );
+        }
+
+        // Camembert MATIERE PREMIERE - Répartition par type
+        if (prodData.mp_souple) {
+            createUniversalPieChartBlocks(
+                'mp-chart-container',
+                { 'Répartition de la <u>Matière Première</u> par type (kg)': prodData.mp_souple },
+                'Kg',
+                'danger',
+                'danger',
+                '{typePesee}'
+            );
+        }
+    }
+
+    // Fonction pour mettre à jour le tableau des pesées du jour
+    function updateDailyWeighingTable(dailyData) {
+        const tbody = document.querySelector('table tbody');
+        if (!tbody) return;
+        //date du jour pour l'onglet Aujourd'hui 
+        const today = new Date();
+        const formatted = today.toLocaleDateString('fr-FR');
+        document.getElementById('today-date-pesee').textContent = dailyData.date || formatted;
+        delete dailyData.date;
+
+        // Vider le tableau existant
+        tbody.innerHTML = '';
+
+        // Ajouter les nouvelles données
+        if (Object.keys(dailyData).length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted">Aucune pesée aujourd\'hui</td></tr>';
+        } else {
+            for (const [typePesee, rows] of Object.entries(dailyData)) {
+                // En-tête de groupe
+                const headerRow = document.createElement('tr');
+                headerRow.className = 'table-info';
+                headerRow.innerHTML = `<td colspan="11" class="fw-bold text-center">${typePesee}</td>`;
+                tbody.appendChild(headerRow);
+
+                // Lignes de données
+                rows.forEach(row => {
+                    const dataRow = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell || '-';
+                        dataRow.appendChild(td);
+                    });
+                    tbody.appendChild(dataRow);
+                });
+            }
+        }
+    }
+
+    // Fonction pour mettre à jour le graphique de production du jour
+    function updateDailyProdTable(dailyData) {
+
+        // Fonction utilitaire pour parser un nombre avec virgule ou point
+        function parseNumber(value) {
+            if (typeof value === 'string') {
+                value = value.replace(',', '.'); // Remplace la virgule par un point
+            }
+            const num = parseFloat(value);
+            return isNaN(num) ? 0 : num;
+        }
+
+
+        if (!dailyData || Object.keys(dailyData).length === 0) {
+            return;
+        }
+        document.getElementById('today-date-prod').textContent = dailyData.date || '';
+        const displayValue = (value, unit = '') => {
+            if (value === null || value === undefined || value === '') return '-';
+            if (value === 0 && unit) return `0 ${unit}`;
+            if (value === 0) return '-';
+            if (typeof value === 'number') return `${value.toLocaleString('fr-FR')} ${unit}`.trim();
+            return value; // Pour les valeurs brutes comme "06:52 >> 15:52"
+        };
+
+        // LAVAGE
+        const lavJour = parseFloat(dailyData.lav?.jour?.prod_jour) || 0;
+        const lavNuit = parseFloat(dailyData.lav?.nuit?.prod_nuit) || 0;
+        const lavHeureWJour = dailyData.lav?.jour?.heure_w || '';
+        const lavHeureWNuit = dailyData.lav?.nuit?.heure_w || '';
+        const lavNombreHJour = parseFloat(dailyData.lav?.jour?.nombre_h) || 0;
+        const lavNombreHNuit = parseFloat(dailyData.lav?.nuit?.nombre_h) || 0;
+
+        // Production : cumulable avec +
+        const lavProdText = lavJour > 0 && lavNuit > 0
+            ? `${displayValue(lavJour, 'Kg')} (Jour) + ${displayValue(lavNuit, 'Kg')} (Nuit)`
+            : lavJour > 0 ? `${displayValue(lavJour, 'Kg')} (Jour)`
+                : lavNuit > 0 ? `${displayValue(lavNuit, 'Kg')} (Nuit)` : '-';
+        document.getElementById('recap-lav-prod').textContent = lavProdText;
+
+        // Heures W : séparées sur 2 lignes
+        document.getElementById('recap-lav-heure-w').innerHTML = (lavHeureWJour || '-') + '<br>' + (lavHeureWNuit || '-');
+
+        // Nombre H : cumulable avec +
+        const lavNombreHText = lavNombreHJour > 0 && lavNombreHNuit > 0
+            ? `${displayValue(lavNombreHJour, 'h')} (Jour) + ${displayValue(lavNombreHNuit, 'h')} (Nuit)`
+            : lavNombreHJour > 0 ? `${displayValue(lavNombreHJour, 'h')} (Jour)`
+                : lavNombreHNuit > 0 ? `${displayValue(lavNombreHNuit, 'h')} (Nuit)` : '-';
+        document.getElementById('recap-lav-nombre-h').textContent = lavNombreHText;
+
+        // PREALPINA
+        const alpJour = parseNumber(dailyData.alp?.jour?.prod_jour) || 0;
+        const alpNuit = parseNumber(dailyData.alp?.nuit?.prod_nuit) || 0;
+        const alpHeureWJour = dailyData.alp?.jour?.heure_w || '';
+        const alpHeureWNuit = dailyData.alp?.nuit?.heure_w || '';
+        const alpNombreHJour = parseNumber(dailyData.alp?.jour?.nombre_h) || 0;
+        const alpNombreHNuit = parseNumber(dailyData.alp?.nuit?.nombre_h) || 0;
+
+        // Production : cumulable avec +
+        const alpProdText = alpJour > 0 && alpNuit > 0
+            ? `${displayValue(alpJour, 'Kg')} (Jour) + ${displayValue(alpNuit, 'Kg')} (Nuit)`
+            : alpJour > 0 ? `${displayValue(alpJour, 'Kg')} (Jour)`
+                : alpNuit > 0 ? `${displayValue(alpNuit, 'Kg')} (Nuit)` : '-';
+        document.getElementById('recap-alp-prod').textContent = alpProdText;
+
+        // Heures W : séparées sur 2 lignes
+        document.getElementById('recap-alp-heure-w').innerHTML = alpHeureWJour + '<br>' + alpHeureWNuit || '-';
+
+        // Nombre H : cumulable avec +
+        const alpNombreHText = alpNombreHJour > 0 && alpNombreHNuit > 0
+            ? `${displayValue(alpNombreHJour, 'h')} (Jour) + ${displayValue(alpNombreHNuit, 'h')} (Nuit)`
+            : alpNombreHJour > 0 ? `${displayValue(alpNombreHJour, 'h')} (Jour)`
+                : alpNombreHNuit > 0 ? `${displayValue(alpNombreHNuit, 'h')} (Nuit)` : '-';
+        document.getElementById('recap-alp-nombre-h').textContent = alpNombreHText;
+
+
+        // === GESTION DES ARRÊTS ===
+
+        // Étape 1: Stocker toutes les données d'arrêts LAVAGE
+        const lavArrets = [];
+
+        // LAVAGE Jour - Arrêt 1
+        const lavJourArret1 = dailyData.lav?.jour?.arret1;
+        const lavJourArret1H = parseNumber(dailyData.lav?.jour?.arret1_h);
+        const lavJourMotif1 = dailyData.lav?.jour?.motif1;
+
+        if (lavJourArret1 && lavJourArret1H > 0) {
+            lavArrets.push({
+                nom: lavJourArret1,
+                duree: lavJourArret1H,
+                motif: lavJourMotif1
+            });
+        }
+
+        // LAVAGE Jour - Arrêt 2
+        const lavJourArret2 = dailyData.lav?.jour?.arret2;
+        const lavJourArret2H = parseNumber(dailyData.lav?.jour?.arret2_h);
+        const lavJourMotif2 = dailyData.lav?.jour?.motif2;
+
+        if (lavJourArret2 && lavJourArret2H > 0) {
+            lavArrets.push({
+                nom: lavJourArret2,
+                duree: lavJourArret2H,
+                motif: lavJourMotif2
+            });
+        }
+
+        // LAVAGE Nuit - Arrêt 1
+        const lavNuitArret1 = dailyData.lav?.nuit?.arret1;
+        const lavNuitArret1H = parseNumber(dailyData.lav?.nuit?.arret1_h);
+        const lavNuitMotif1 = dailyData.lav?.nuit?.motif1;
+
+        if (lavNuitArret1 && lavNuitArret1H > 0) {
+            lavArrets.push({
+                nom: lavNuitArret1,
+                duree: lavNuitArret1H,
+                motif: lavNuitMotif1
+            });
+        }
+
+        // LAVAGE Nuit - Arrêt 2
+        const lavNuitArret2 = dailyData.lav?.nuit?.arret2;
+        const lavNuitArret2H = parseNumber(dailyData.lav?.nuit?.arret2_h);
+        const lavNuitMotif2 = dailyData.lav?.nuit?.motif2;
+
+        if (lavNuitArret2 && lavNuitArret2H > 0) {
+            lavArrets.push({
+                nom: lavNuitArret2,
+                duree: lavNuitArret2H,
+                motif: lavNuitMotif2
+            });
+        }
+
+        // Étape 2: Stocker toutes les données d'arrêts PREALPINA
+        const alpArrets = [];
+
+        // PREALPINA Jour - Arrêt 1
+        const alpJourArret1 = dailyData.alp?.jour?.arret1;
+        const alpJourArret1H = parseNumber(dailyData.alp?.jour?.arret1_h);
+        const alpJourMotif1 = dailyData.alp?.jour?.motif1;
+
+        if (alpJourArret1 && alpJourArret1H > 0) {
+            alpArrets.push({
+                nom: alpJourArret1,
+                duree: alpJourArret1H,
+                motif: alpJourMotif1
+            });
+        }
+
+        // PREALPINA Jour - Arrêt 2
+        const alpJourArret2 = dailyData.alp?.jour?.arret2;
+        const alpJourArret2H = parseNumber(dailyData.alp?.jour?.arret2_h);
+        const alpJourMotif2 = dailyData.alp?.jour?.motif2;
+
+        if (alpJourArret2 && alpJourArret2H > 0) {
+            alpArrets.push({
+                nom: alpJourArret2,
+                duree: alpJourArret2H,
+                motif: alpJourMotif2
+            });
+        }
+
+        // PREALPINA Nuit - Arrêt 1
+        const alpNuitArret1 = dailyData.alp?.nuit?.arret1;
+        const alpNuitArret1H = parseNumber(dailyData.alp?.nuit?.arret1_h);
+        const alpNuitMotif1 = dailyData.alp?.nuit?.motif1;
+
+        if (alpNuitArret1 && alpNuitArret1H > 0) {
+            alpArrets.push({
+                nom: alpNuitArret1,
+                duree: alpNuitArret1H,
+                motif: alpNuitMotif1
+            });
+        }
+
+        // PREALPINA Nuit - Arrêt 2
+        const alpNuitArret2 = dailyData.alp?.nuit?.arret2;
+        const alpNuitArret2H = parseNumber(dailyData.alp?.nuit?.arret2_h);
+        const alpNuitMotif2 = dailyData.alp?.nuit?.motif2;
+
+        if (alpNuitArret2 && alpNuitArret2H > 0) {
+            alpArrets.push({
+                nom: alpNuitArret2,
+                duree: alpNuitArret2H,
+                motif: alpNuitMotif2
+            });
+        }
+
+
+        // Étape 3: Afficher les données
+        const arretsTbody = document.getElementById('recap-arrets-tbody');
+        arretsTbody.innerHTML = ''; // Vider le tbody
+
+        const maxArrets = Math.max(lavArrets.length, alpArrets.length);
+
+        // Créer une ligne pour chaque arrêt
+        for (let i = 0; i < maxArrets; i++) {
+            const row = document.createElement('tr');
+
+            // Colonne indicateur (Arrêt 1, Arrêt 2, etc.)
+            const indicateurCell = document.createElement('td');
+            indicateurCell.className = 'fw-bold';
+            indicateurCell.textContent = `Arrêt ${i + 1}`;
+            row.appendChild(indicateurCell);
+
+            // Colonne LAVAGE
+            const lavCell = document.createElement('td');
+            lavCell.className = 'text-center';
+            if (lavArrets[i]) {
+                const arret = lavArrets[i];
+                lavCell.innerHTML = `${displayValue(arret.duree, 'h')} - ${arret.nom}${arret.motif ? '<br>' + arret.motif : ''}`;
+            } else {
+                lavCell.textContent = '-';
+            }
+            row.appendChild(lavCell);
+
+            // Colonne PREALPINA
+            const alpCell = document.createElement('td');
+            alpCell.className = 'text-center';
+            if (alpArrets[i]) {
+                const arret = alpArrets[i];
+                alpCell.innerHTML = `${displayValue(arret.duree, 'h')} - ${arret.nom}${arret.motif ? '<br>' + arret.motif : ''}`;
+            } else {
+                alpCell.textContent = '-';
+            }
+            row.appendChild(alpCell);
+
+            arretsTbody.appendChild(row);
+        }
+
+        // Fonction helper pour remplir un tableau MP
+        function fillMpTable(tbodyId, mpData) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody || !mpData) return;
+
+            tbody.innerHTML = ''; // Vider le tbody
+            let hasData = false;
+
+            // Parcourir toutes les données
+            Object.keys(mpData).forEach(key => {
+                const value = parseNumber(mpData[key]) || 0;
+
+                // N'afficher que si la valeur > 0
+                if (value > 0) {
+                    hasData = true;
+                    const row = document.createElement('tr');
+
+                    // Colonne Type
+                    const typeCell = document.createElement('td');
+                    typeCell.textContent = key;
+                    row.appendChild(typeCell);
+
+                    // Colonne Quantité
+                    const qtyCell = document.createElement('td');
+                    qtyCell.className = 'text-end fw-bold';
+                    qtyCell.textContent = displayValue(value, 'Kg');
+                    row.appendChild(qtyCell);
+
+                    tbody.appendChild(row);
+                }
+            });
+
+            // Si aucune donnée > 0, afficher un message
+            if (!hasData) {
+                tbody.innerHTML = '<tr><td colspan="2" class="text-center text-muted">Aucune donnée</td></tr>';
+            }
+        }
+
+        // Mettre à jour la date MP
+        if (dailyData.mp) {
+            document.getElementById('today-date-mp').textContent = dailyData.date || '';
+        }
+
+        // Remplir les 4 tableaux MP
+        if (dailyData.mp) {
+            fillMpTable('recap-mp-souple', dailyData.mp.mp_souple);
+            fillMpTable('recap-mp-rigide', dailyData.mp.mp_rigide);
+            fillMpTable('recap-mp-broye', dailyData.mp.mp_broye);
+            fillMpTable('recap-mp-densifie', dailyData.mp.mp_densifie);
+        }
+    }
+
+    // Fonction pour mettre à jour le graphique de stock du jour
+    function updateDailyStockTable(stockData) {
+        if (!stockData || Object.keys(stockData).length === 0) {
+            return;
+        }
+
+        // Mettre à jour la date du stock
+        document.getElementById('today-date-stock').textContent = stockData.date || '';
+
+        // Préparer les données pour Stock Densifié (exclure 'total')
+        if (stockData.stock_densifie) {
+            const densifieData = {};
+            const densifieColors = [];
+            Object.keys(stockData.stock_densifie).forEach(key => {
+                if (key !== 'total' && stockData.stock_densifie[key] && parseFloat(stockData.stock_densifie[key]) > 0) {
+                    // Créer des labels lisibles
+                    const labels = {
+                        'noir': 'Noir',
+                        'noir_pp_homo': 'Noir PP Homo',
+                        'pp_homo': 'PP Homo',
+                        'noir_pe_boye': 'Noir PE Boye',
+                        'noir_refait': 'Noir Refait',
+                        'noir_nc': 'Noir NC',
+                        'noir_a_recy': 'Noir à Recycler',
+                        'matiere_tide': 'Matière Tide',
+                        'vert': 'Vert',
+                        'bleu': 'Bleu',
+                        'blanc_serre': 'Blanc Serre',
+                        'blanc': 'Blanc',
+                        'blanc_sac_matiere': 'Blanc Sac Matière',
+                        'purge_broye': 'Purge Broyé',
+                        'densifier_pneumatique': 'Densifié Pneumatique'
+                    };
+                    if (labels[key]) {
+                        densifieData[labels[key]] = parseFloat(stockData.stock_densifie[key]);
+                        densifieColors.push(stockData.colors.densifie[key])
+                    }
+                }
+            });
+
+            // Créer le graphique Stock Densifié
+            if (Object.keys(densifieData).length > 0) {
+                createUniversalPieChartBlocks(
+                    'stock-densifie-container',
+                    { 'Stock Densifié': densifieData },
+                    'Kg',
+                    'success',
+                    'success',
+                    '{typePesee}',
+                    densifieColors
+                );
+            }
+        }
+
+        // Préparer les données pour Stock Granulé (exclure 'total')
+        if (stockData.stock_granule) {
+            const granuleData = {};
+            const granuleColors = [];
+            Object.keys(stockData.stock_granule).forEach(key => {
+                if (key !== 'total' && stockData.stock_granule[key] && parseFloat(stockData.stock_granule[key]) > 0) {
+                    // Créer des labels lisibles
+                    const labels = {
+                        'noir': 'Noir',
+                        'noir_pp_homo': 'Noir PP Homo',
+                        'noir_pp_homo_pp_copo': 'Noir PP Homo + PP Copo',
+                        'noir_hdpe': 'Noir HDPE',
+                        'hdpe_noir': 'HDPE Noir',
+                        'pp_copo_noir': 'PP Copo Noir',
+                        'blanc': 'Blanc',
+                        'bleu': 'Bleu',
+                        'vert': 'Vert',
+                        'noir_nc': 'Noir NC',
+                        'noir_pp_homo_nc': 'Noir PP Homo NC'
+                    };
+                    if (labels[key]) {
+                        granuleData[labels[key]] = parseFloat(stockData.stock_granule[key]);
+                        granuleColors.push(stockData.colors.granule[key])
+                    }
+                }
+            });
+
+            // Créer le graphique Stock Granulé
+            if (Object.keys(granuleData).length > 0) {
+                createUniversalPieChartBlocks(
+                    'stock-granule-container',
+                    { 'Stock Granulé': granuleData },
+                    'Kg',
+                    'success',
+                    'success',
+                    '{typePesee}',
+                    granuleColors
+                );
+            }
+        }
+    }
+
+    // Initialisation au chargement de la page
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer la préférence sauvegardée ou utiliser 'today' par défaut
+        const savedTab = localStorage.getItem('dashboardActiveTab') || 'today';
+        switchTab(savedTab);
+
+        // Définir le mois courant par défaut (format YYYY-MM)
+        const now = new Date();
+        const currentMonth = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        const dateSelector = document.getElementById('date-selector');
+        if (dateSelector) {
+            dateSelector.value = currentMonth;
+        }
+
+        // Écouter les changements de mois
+        if (dateSelector) {
+            dateSelector.addEventListener('change', function () {
+                const selectedMonth = this.value; // Format YYYY-MM
+                loadExcelData(selectedMonth);
+                // Sauvegarder la préférence
+                localStorage.setItem('dashboardSelectedDate', selectedMonth);
+            });
+        }
+        // Restaurer le mois sauvegardé ou utiliser le mois actuel
+        const savedMonth = localStorage.getItem('dashboardSelectedDate');
+        const initialMonth = savedMonth || currentMonth;
+
+        if (dateSelector) {
+            dateSelector.value = initialMonth;
+            loadExcelData(initialMonth);
+        }
+
+    });
+</script>
+{% endblock %}

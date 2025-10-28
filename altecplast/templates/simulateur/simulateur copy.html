@@ -1,0 +1,604 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logo/container.png' %}" >
+    <title>Simulateur de Prix au Kg</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ecf0f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #3498db;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid #2980b9;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #d5d8dc;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus,
+        select:focus,
+        input[type="radio"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .result-section {
+            background: #5dade2;
+            color: white;
+        }
+
+        .result-section h2 {
+            color: white;
+            border-bottom-color: white;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .final-result {
+            background: #3498db;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            border: 2px solid white;
+        }
+
+        .final-result .label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .final-result .value {
+            font-size: 2.5em;
+            font-weight: 900;
+        }
+
+        .tva-detail {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        .subsection {
+            background: #85c1e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid white;
+        }
+
+        .subsection h3 {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .collapsible-header {
+            cursor: pointer;
+            padding: 15px;
+            background: #85c1e9;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid white;
+            transition: background 0.3s;
+        }
+
+        .collapsible-header:hover {
+            background: #7ab8e0;
+        }
+
+        .collapsible-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collapsible-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+        }
+
+        .collapsible-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .collapsible-summary .result-label {
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        .collapsible-summary .result-value {
+            font-weight: 700;
+            font-size: 1.15em;
+        }
+
+        .collapsible-icon {
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .collapsible-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #85c1e9;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid white;
+            border-top: none;
+        }
+
+        .collapsible-content.open {
+            max-height: 500px;
+            transition: max-height 0.3s ease-in;
+        }
+
+        .collapsible-content-inner {
+            padding: 15px;
+            padding-top: 0;
+        }
+       .type-matiere-input {
+            flex: 1;
+        }
+
+        .type-matiere-radios {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding-top: 28px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            cursor: pointer;
+            accent-color: #3498db;
+        }
+
+        .radio-option label {
+            margin: 0;
+            font-weight: 500;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .final-result .value {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .type-matiere-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .type-matiere-radios {
+                padding-top: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .main-content {
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.3em;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+            }
+
+            .type-matiere-radios {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Simulateur de prix</h1>
+            <p class="subtitle"> 2N PLASTIC ©2024-{% now "Y" %} </p>
+        </header>
+
+        <div class="main-content">
+            <!-- Section Saisie -->
+            <div class="section">
+                <h2>Données d'entrée</h2>
+
+                <div class="form-group">
+                    <label for="poids_dum">Poids DUM (T)</label>
+                    <input type="number" id="poids_dum" step="10" value="" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="prix_matiere">Prix d'achat matière première (€/T)</label>
+                    <input type="number" id="prix_matiere" step="1" value="">
+                </div>
+
+                <div class="form-group">
+                    <label for="transport_terrestre">Transport terrestre (€)</label>
+                    <input type="number" id="transport_terrestre" step="100" value="" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="transport_maritime">Transport maritime / frais locaux (€)</label>
+                    <input type="number" id="transport_maritime" step="100" value="" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="transitaire">Transitaire (MAD)</label>
+                    <input type="number" id="transitaire" step="100" value="2500" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="transporteur_local">Transporteur local (MAD)</label>
+                    <input type="number" id="transporteur_local" step="100" value="1000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="manutention">Manutention (MAD)</label>
+                    <input type="number" id="manutention" step="100" value="700" min="0">
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <div class="type-matiere-input">
+                            <label for="type_matiere">Mise à la valeur</label>
+                            <input type="number" id="type_matiere" step="1" value="3" min="0">
+                        </div>
+                        <div class="type-matiere-radios">
+                            <div class="radio-option">
+                                <input type="radio" id="radio_dechet" name="type_radio" value="3" checked>
+                                <label for="radio_dechet">Déchet (3)</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="radio_broye" name="type_radio" value="9">
+                                <label for="radio_broye">Broyé (9)</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="radio_granule" name="type_radio" value="9">
+                                <label for="radio_granule">Granulé (9)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Résultats -->
+            <div class="section result-section">
+                <h2>Résumé des calculs</h2>
+
+                <div class="result-item">
+                    <span class="result-label">📦 Prix matière première</span>
+                    <span class="result-value" id="display_prix_matiere">0.00 MAD</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">🚚 Transport terrestre</span>
+                    <span class="result-value" id="display_transport_terrestre">0.00 MAD</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">🚢 Transport maritime</span>
+                    <span class="result-value" id="display_transport_maritime">0.00 MAD</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">📋 Transitaire</span>
+                    <span class="result-value" id="display_transitaire">0.00 MAD</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">🚛 Transporteur local</span>
+                    <span class="result-value" id="display_transporteur_local">0.00 MAD</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">🏗️ Manutention</span>
+                    <span class="result-value" id="display_manutention">0.00 MAD</span>
+                </div>
+
+                <!-- Tiroir collapsible pour les taxes -->
+                <div class="collapsible-header" onclick="toggleTaxes()">
+                    <div class="collapsible-header-top">
+                        <h3>Détail des taxes</h3>
+                        <span class="collapsible-icon" id="taxes-icon">▼</span>
+                    </div>
+                    <div class="collapsible-summary">
+                        <span class="result-label">💰 Total Taxes</span>
+                        <span class="result-value" id="display_total_taxes_header">0.00 MAD</span>
+                    </div>
+                </div>
+                <div class="collapsible-content" id="taxes-content">
+                    <div class="collapsible-content-inner">
+                        <div class="result-item">
+                            <span class="result-label">📊 Mise à la valeur</span>
+                            <span class="result-value" id="display_mise_valeur">0.00 MAD</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">📈 Parafiscale (0,25%)</span>
+                            <span class="result-value" id="display_parafiscale">0.00 MAD</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">🌱 Taxe envir. (1%)</span>
+                            <span class="result-value" id="display_taxe_env">0.00 MAD</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">🧾 TVA (20%)</span>
+                            <span class="result-value" id="display_tva">0.00 MAD</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">💳 Redevance</span>
+                            <span class="result-value" id="display_redevance">15.00 MAD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-item" style="border-top: 2px solid rgba(255, 255, 255, 0.5); margin-top: 10px; padding-top: 15px;">
+                    <span class="result-label" style="font-size: 1.2em;">💵 Prix Total</span>
+                    <span class="result-value" id="display_prix_total" style="font-size: 1.3em;">0.00 MAD</span>
+                </div>
+
+                <div class="final-result">
+                    <div class="label">PRIX AU KG TTC</div>
+                    <div class="value" id="display_prix_kg">0.00 MAD</div>
+                    <div class="tva-detail">TVA/kg : <span id="display_tva_kg">0.00</span> MAD</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Taux de conversion
+        const TAUX_CONVERSION_EUR_MAD = 10.8;
+
+        // Fonction de formatage des nombres avec espace tous les milliers
+        function formatNumber(num) {
+            const fixed = num.toFixed(2);
+            const parts = fixed.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+            // N'afficher les décimales que si elles sont significatives (différentes de .00)
+            if (parts[1] === '00') {
+                return parts[0];
+            }
+            return parts.join('.');
+        }
+
+        // Fonction principale de calcul
+        function calculerPrix() {
+            // Récupération des valeurs en euros
+            const poidsDumTonne = parseFloat(document.getElementById('poids_dum').value) || 0;
+            const prixMatiereEurParTonne = parseFloat(document.getElementById('prix_matiere').value) || 0;
+            const transportTerrestreEur = parseFloat(document.getElementById('transport_terrestre').value) || 0;
+            const transportMaritimeEur = parseFloat(document.getElementById('transport_maritime').value) || 0;
+            const transitaire = parseFloat(document.getElementById('transitaire').value) || 0;
+            const transporteurLocal = parseFloat(document.getElementById('transporteur_local').value) || 0;
+            const manutention = parseFloat(document.getElementById('manutention').value) || 0;
+            const typeMatiere = parseFloat(document.getElementById('type_matiere').value) || 3;
+
+            // Conversion euro/tonne vers MAD/kg : (€/tonne * 10.2) / 1000
+            const prixMatiereParKg = (prixMatiereEurParTonne * TAUX_CONVERSION_EUR_MAD) / 1000;
+            const transportTerrestre = transportTerrestreEur * TAUX_CONVERSION_EUR_MAD;
+            const transportMaritime = transportMaritimeEur * TAUX_CONVERSION_EUR_MAD;
+
+            const poidsDumKg = poidsDumTonne * 1000 // convertion en kg
+
+            // Calcul de la mise à la valeur
+            const miseValeur = poidsDumKg * typeMatiere;
+
+            // Calcul des taxes
+            const parafiscale = miseValeur * 0.0025; // 0,25%
+            const taxeEnvironnementale = miseValeur * 0.01; // 1%
+            const baseVTA = miseValeur + parafiscale + taxeEnvironnementale;
+            const tva = baseVTA * 0.20; // 20%
+            const redevance = 150;
+            const totalTaxes = parafiscale + taxeEnvironnementale + tva + redevance;
+
+            // Calcul du prix total
+            const prixMatiereTotal = prixMatiereParKg * poidsDumKg;
+            const prixTotal = prixMatiereTotal + transportTerrestre + transportMaritime +
+                              transitaire + transporteurLocal + manutention + totalTaxes;
+
+            // Calcul du prix au kg
+            const prixKg = poidsDumKg > 0 ? prixTotal / poidsDumKg : 0;
+            const tvaParKg = poidsDumKg > 0 ? tva / poidsDumKg : 0;
+
+            // Affichage des résultats (tout en MAD)
+            document.getElementById('display_mise_valeur').textContent = formatNumber(miseValeur) + ' MAD';
+            document.getElementById('display_parafiscale').textContent = formatNumber(parafiscale) + ' MAD';
+            document.getElementById('display_taxe_env').textContent = formatNumber(taxeEnvironnementale) + ' MAD';
+            document.getElementById('display_tva').textContent = formatNumber(tva) + ' MAD';
+            document.getElementById('display_redevance').textContent = formatNumber(redevance) + ' MAD';
+            document.getElementById('display_total_taxes_header').textContent = formatNumber(totalTaxes) + ' MAD';
+
+            document.getElementById('display_prix_matiere').textContent = formatNumber(prixMatiereTotal) + ' MAD';
+            document.getElementById('display_transport_terrestre').textContent = formatNumber(transportTerrestre) + ' MAD';
+            document.getElementById('display_transport_maritime').textContent = formatNumber(transportMaritime) + ' MAD';
+            document.getElementById('display_transitaire').textContent = formatNumber(transitaire) + ' MAD';
+            document.getElementById('display_transporteur_local').textContent = formatNumber(transporteurLocal) + ' MAD';
+            document.getElementById('display_manutention').textContent = formatNumber(manutention) + ' MAD';
+
+            document.getElementById('display_prix_total').textContent = formatNumber(prixTotal) + ' MAD';
+            document.getElementById('display_prix_kg').textContent = formatNumber(prixKg) + ' MAD';
+            document.getElementById('display_tva_kg').textContent = formatNumber(tvaParKg);
+        }
+
+        // Fonction pour gérer les boutons radio
+        function handleRadioChange(event) {
+            const typeMatiereInput = document.getElementById('type_matiere');
+            typeMatiereInput.value = event.target.value;
+            calculerPrix();
+        }
+
+        // Fonction pour ouvrir/fermer le tiroir des taxes
+        function toggleTaxes() {
+            const content = document.getElementById('taxes-content');
+            const icon = document.getElementById('taxes-icon');
+
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.classList.remove('open');
+            } else {
+                content.classList.add('open');
+                icon.classList.add('open');
+            }
+        }
+
+        // Ajout des écouteurs d'événements sur tous les champs
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', calculerPrix);
+                input.addEventListener('change', calculerPrix);
+            });
+
+            // Écouteurs pour les boutons radio
+            const radioButtons = document.querySelectorAll('input[type="radio"][name="type_radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', handleRadioChange);
+            });
+
+            // Calcul initial
+            calculerPrix();
+        });
+    </script>
+</body>
+</html>

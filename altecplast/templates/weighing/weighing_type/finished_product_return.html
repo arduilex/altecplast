@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Retour Produit Fini{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Retour Produit Fini</h2>
+            <a href="{% url 'weighing' %}" class="btn btn-secondary">← Retour</a>
+        </div>
+
+        <form method="post" class="compact-form">
+            {% csrf_token %}
+
+            <!-- Informations de Base -->
+            <div class="form-section">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="weighing_number" class="form-label">Numéro de Pesée</label>
+                            <input type="text" class="form-control" id="weighing_number" name="weighing_number"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="client_id" class="form-label">Client</label>
+                            <select class="form-select" id="client_id" name="client_id" required>
+                                <option value="SELECT">Sélectionner un client</option>
+                                {% for client in clients %}
+                                <option value="{{ client.id }}">{{ client.company_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations Transport (auto-populated) -->
+            <div class="form-section">
+                <h4>Informations Transport</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="transporter" class="form-label">Transporteur</label>
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control me-2" id="transporter" name="transporter">
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    onclick="$('#transporter').val('LUI-MEME')">
+                                    🎯
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="vehicle_type" class="form-label">Type de Véhicule</label>
+                            <select class="form-select" id="vehicle_type" name="vehicle_type">
+                                <option value="SELECT">Sélectionner un type</option>
+                                <option value="CAMION 10G">Camion 10G</option>
+                                <option value="CAMION 8G">Camion 8G</option>
+                                <option value="CAMION 6G">Camion 6G</option>
+                                <option value="CAMION 5G">Camion 5G</option>
+                                <option value="CAMIONNETTE">Camionnette</option>
+                                <option value="PICK-UP">Pick-Up</option>
+                                <option value="REMORQUE">Remorque</option>
+                                <option value="CONTENEUR">Conteneur</option>
+                                <option value="TRAFFIC">Traffic</option>
+                                <option value="AUTRE">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="license_plate" class="form-label">Plaque d'Immatriculation</label>
+                            <input type="text" class="form-control" id="license_plate" name="license_plate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculs de Poids -->
+            <div class="form-section weight-calculation">
+                <h4>Calculs de Poids</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="gross_weight_kg" class="form-label">Poids Brut (kg)</label>
+                            <input type="number" class="form-control" id="gross_weight_kg" name="gross_weight_kg"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="tare_weight" class="form-label">Tare (kg)</label>
+                            <input type="number" class="form-control" id="tare_weight" name="tare_weight" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="net_weight_1_kg" class="form-label">Net Final (kg)</label>
+                            <input type="number" class="form-control" id="net_weight_1_kg" name="net_weight_1_kg"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations Produit (auto-populated) -->
+            <div class="form-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Informations Produit</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product" class="form-label">Produit</label>
+                                    <select class="form-select" id="product" name="product">
+                                        <option value="SELECT">Sélectionner un produit</option>
+                                        <option value="PLASTIQUE">Plastique</option>
+                                        <option value="PURGES">Purges</option>
+                                        <option value="CARTON">Carton</option>
+                                        <option value="BOIS">Bois</option>
+                                        <option value="FERREUX">Ferreux</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="form" class="form-label">Forme</label>
+                                    <select class="form-select" id="form" name="form">
+                                        <option value="SELECT">Sélectionner une forme</option>
+                                        <option value="DECHET">Déchet</option>
+                                        <option value="BROYE">Broyé</option>
+                                        <option value="GRANULES">Granulés</option>
+                                        <option value="DENSIFIE">Densifié</option>
+                                        <option value="BRUT">Brut</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="product_type" class="form-label">Type de Produit</label>
+                                    <select class="form-select" id="product_type" name="product_type">
+                                        <option value="SELECT">Sélectionner un type</option>
+                                        <option value="PELD">PELD</option>
+                                        <option value="PP">PP</option>
+                                        <option value="PET">PET</option>
+                                        <option value="PEHD">PEHD</option>
+                                        <option value="PS CHOC">PS Choc</option>
+                                        <option value="PALETTE">Palette</option>
+                                        <option value="BOIS CASSE">Bois Cassé</option>
+                                        <option value="ALUMINIUM">Aluminium</option>
+                                        <option value="FERRAILLE">Ferraille</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="color_quality" class="form-label">Couleur/Qualité</label>
+                                    <select class="form-select" id="color_quality" name="color_quality">
+                                        <option value="SELECT">Sélectionner couleur/qualité</option>
+                                        <option value="BLANC 1ere">Blanc 1ère</option>
+                                        <option value="BLANC 2eme">Blanc 2eme</option>
+                                        <option value="NOIR">Noir</option>
+                                        <option value="BLEU">Bleu</option>
+                                        <option value="VERT">Vert</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Emballage</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="packaging" class="form-label">Emballage</label>
+                                    <select class="form-select" id="packaging" name="packaging">
+                                        <option value="SELECT">Sélectionner emballage</option>
+                                        <option value="VRAC">Vrac</option>
+                                        <option value="BALLE">Balle</option>
+                                        <option value="COLIS">Colis</option>
+                                        <option value="SAC">Sac</option>
+                                        <option value="BIG-BAG">Big-bag</option>
+                                        <option value="AUTRE">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="packaging_quantity" class="form-label">Quantité</label>
+                                    <input type="number" class="form-control" id="packaging_quantity"
+                                        name="packaging_quantity">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg">Enregistrer la Pesée</button>
+                    <a href="{% url 'weighing' %}" class="btn btn-secondary btn-lg ms-2">Annuler</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        // Auto-populate fields when client is selected
+        $('#client_id').change(function () {
+            var clientId = $(this).val();
+            if (clientId && clientId !== 'SELECT') {
+                // Make AJAX call to get client defaults
+                $.get('{% url "get_client_defaults" %}', { client_id: clientId }, function (data) {
+                    $('#transporter').val(data.default_transporter || '');
+                    $('#vehicle_type').val(data.default_vehicle_type || 'SELECT');
+                    $('#license_plate').val(data.default_license_plate || '');
+                    $('#product').val(data.default_product || 'SELECT');
+                    $('#product_type').val(data.default_product_type || 'SELECT');
+                    $('#form').val(data.default_form || 'SELECT');
+                    $('#color_quality').val(data.default_color_quality || 'SELECT');
+                    $('#packaging').val(data.default_packaging || 'SELECT');
+                });
+            } else {
+                // Clear all auto-populated fields
+                $('#transporter, #license_plate').val('');
+                $('#vehicle_type').val('SELECT');
+            }
+        });
+
+        // Calculate net weight automatically (no deduction for finished product return)
+        function calculateWeights() {
+            var grossWeight = parseFloat($('#gross_weight_kg').val()) || 0;
+            var tareWeight = parseFloat($('#tare_weight').val()) || 0;
+
+            // Calculate net weight (gross - tare)
+            var netWeight = grossWeight - tareWeight;
+            $('#net_weight_1_kg').val(netWeight);
+        }
+
+        // Bind calculation to weight input changes
+        $('#gross_weight_kg, #tare_weight').on('input change', calculateWeights);
+    });
+</script>
+{% endblock %}

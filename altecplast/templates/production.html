@@ -1,0 +1,1096 @@
+{% extends 'base.html' %}
+
+{% block title %}Production - ALTECPLAST{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-4">
+                <i class="fas fa-industry text-primary me-3" style="font-size: 2.5rem;"></i>
+                <h1 class="text-primary mb-0">Saisie Production journaliere</h1>
+            </div>
+
+            <form id="productionForm" method="post">
+                {% csrf_token %}
+                <!-- En-tête avec Date et sélecteurs -->
+                <div class="row mb-4">
+                    <div class="col-md-2">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" name="date" id="date">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="rempli-par" class="form-label">Rempli par</label>
+                        <select id="rempli-par" class="form-select" name="rempli_par">
+                            <option value="">Sélectionner...</option>
+                            <option value="Nezha">Nezha</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="meteo" class="form-label">Météo</label>
+                        <select id="meteo" class="form-select" name="meteo">
+                            <option value="">Sélectionner...</option>
+                            <option value="soleil">Soleil</option>
+                            <option value="pluie">Pluie</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <ul class="nav nav-tabs mb-4" id="productionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="lavage-tab" data-bs-toggle="tab" data-bs-target="#lavage"
+                            type="button" role="tab">Lavage</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="prealpina-tab" data-bs-toggle="tab" data-bs-target="#prealpina"
+                            type="button" role="tab">Préalpina</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="matiere-tab" data-bs-toggle="tab" data-bs-target="#matiere"
+                            type="button" role="tab">Matière première</button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="productionTabContent">
+                    <!-- Onglet Lavage -->
+                    <div class="tab-pane fade show active" id="lavage" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <!-- Production totale -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <label for="production-totale-lavage" class="form-label"><strong>Production
+                                                totale (Kg)</strong></label>
+                                        <input id="production-totale-lavage" type="number" class="form-control"
+                                            name="lavage_production_totale" step="10">
+                                    </div>
+                                </div>
+
+                                <!-- Poste Jour -->
+                                <fieldset class="border p-3 mb-4">
+                                    <legend class="w-auto px-2" style="font-size: 1rem;">Poste Jour</legend>
+
+                                    <!-- Section Mesures -->
+                                    <div class="measurements-section p-3 mb-3"
+                                        style="background-color: #f8f9fa; border-radius: 0.375rem; border: 1px solid #dee2e6;">
+                                        <h6 class="mb-3 text-muted">Mesures de production</h6>
+
+                                        <!-- Ligne 1: Noir -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Noir C</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_jour_noir_c" data-poste="lavage-jour">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Noir
+                                                            NC</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_jour_noir_nc" data-poste="lavage-jour">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 2: Blanc -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Blanc
+                                                            C</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_jour_blanc_c" data-poste="lavage-jour">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Blanc
+                                                            NC</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_jour_blanc_nc" data-poste="lavage-jour">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 3: Bleu -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Bleu C</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_jour_bleu_c" data-poste="lavage-jour">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Bleu
+                                                            NC</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_jour_bleu_nc" data-poste="lavage-jour">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="alert alert-info mb-0">
+                                                <strong>P° de jour (Kg): <span id="total-lavage-jour">0</span></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Section Horaires -->
+                                    <div class="time-section p-3"
+                                        style="background-color: #fff3cd; border-radius: 0.375rem; border: 1px solid #ffeaa7;">
+                                        <h6 class="mb-3 text-muted">Horaires de travail</h6>
+
+                                        <!-- Heure W -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure W (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="lavage_jour_heure_w_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="lavage_jour_heure_w_fin">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 1 + Motif 1 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 1 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_jour_heure_a1_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_jour_heure_a1_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_jour_motif_arret1" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_jour_motif_arret1" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_jour_motif_arret1" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('lavage_jour_motif_arret1')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 2 + Motif 2 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 2 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_jour_heure_a2_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_jour_heure_a2_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_jour_motif_arret2" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_jour_motif_arret2" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_jour_motif_arret2" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('lavage_jour_motif_arret2')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </fieldset>
+
+                                <!-- Poste Nuit -->
+                                <fieldset class="border p-3 mb-4">
+                                    <legend class="w-auto px-2" style="font-size: 1rem;">Poste Nuit</legend>
+
+                                    <!-- Section Mesures -->
+                                    <div class="measurements-section p-3 mb-3"
+                                        style="background-color: #f8f9fa; border-radius: 0.375rem; border: 1px solid #dee2e6;">
+                                        <h6 class="mb-3 text-muted">Mesures de production</h6>
+
+                                        <!-- Ligne 1: Noir -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Noir C</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_nuit_noir_c" data-poste="lavage-nuit">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Noir
+                                                            NC</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_nuit_noir_nc" data-poste="lavage-nuit">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 2: Blanc -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Blanc
+                                                            C</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_nuit_blanc_c" data-poste="lavage-nuit">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Blanc
+                                                            NC</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_nuit_blanc_nc" data-poste="lavage-nuit">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 3: Bleu -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Bleu C</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_nuit_bleu_c" data-poste="lavage-nuit">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Bleu
+                                                            NC</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="lavage_nuit_bleu_nc" data-poste="lavage-nuit">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="alert alert-info mb-0">
+                                                <strong>P° de nuit (Kg): <span id="total-lavage-nuit">0</span></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Section Horaires -->
+                                    <div class="time-section p-3"
+                                        style="background-color: #fff3cd; border-radius: 0.375rem; border: 1px solid #ffeaa7;">
+                                        <h6 class="mb-3 text-muted">Horaires de travail</h6>
+
+                                        <!-- Heure W -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Heure W (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="lavage_nuit_heure_w_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="lavage_nuit_heure_w_fin">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 1 + Motif 1 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 1 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_nuit_heure_a1_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_nuit_heure_a1_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_nuit_motif_arret1" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_nuit_motif_arret1" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_nuit_motif_arret1" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('lavage_nuit_motif_arret1')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 2 + Motif 2 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 2 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_nuit_heure_a2_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="lavage_nuit_heure_a2_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_nuit_motif_arret2" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_nuit_motif_arret2" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="lavage_nuit_motif_arret2" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('lavage_nuit_motif_arret2')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </fieldset>
+
+                                <hr class="my-4">
+
+                                <!-- Champs de purge -->
+                                <div class="row mb-4">
+                                    <div class="col-md-2">
+                                        <label for="lavage-purge-jour" class="form-label">Purge jour</label>
+                                        <input type="number" class="form-control" name="lavage_purge_jour" step="10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="lavage-purge-nuit" class="form-label">Purge nuit</label>
+                                        <input type="number" class="form-control" name="lavage_purge_nuit" step="10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="lavage-nc" class="form-label">NC</label>
+                                        <input type="number" class="form-control" name="lavage_non_conforme" step="10">
+                                    </div>
+                                </div>
+
+                                <!-- Boutons -->
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                                            <button type="button" class="btn btn-secondary"
+                                                onclick="setTimeout(() => location.reload(), 100);">Annuler</button>
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="validateAndGoNext()">Suivant</button>
+                                            <button type="button" class="btn btn-warning" onclick="goToNextTab()">Arrêt
+                                                programmé</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onglet Préalpina -->
+                    <div class="tab-pane fade" id="prealpina" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <!-- Production totale -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <label for="production-totale-prealpina" class="form-label"><strong>Production
+                                                totale (Kg)</strong></label>
+                                        <input type="number" id="production-totale-prealpina" class="form-control"
+                                            name="prealpina_production_totale" step="10">
+                                    </div>
+                                </div>
+
+                                <!-- Poste Jour -->
+                                <fieldset class="border p-3 mb-4">
+                                    <legend class="w-auto px-2" style="font-size: 1rem;">Poste Jour</legend>
+
+                                    <!-- Section Mesures -->
+                                    <div class="measurements-section p-3 mb-3"
+                                        style="background-color: #f8f9fa; border-radius: 0.375rem; border: 1px solid #dee2e6;">
+                                        <h6 class="mb-3 text-muted">Mesures de production</h6>
+
+                                        <!-- Ligne 1: big bag -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Big Bag
+                                                            Noir</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_jour_bigbag_noir"
+                                                    data-poste="prealpina-jour">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Big Bag
+                                                            Blanc</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_jour_bigbag_blanc"
+                                                    data-poste="prealpina-jour">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 2: sacs -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Sacs
+                                                            Blanc</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_jour_sacs_blanc"
+                                                    data-poste="prealpina-jour">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Sacs
+                                                            Bleu</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_jour_sacs_bleu"
+                                                    data-poste="prealpina-jour">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 3: noir -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Sacs
+                                                            Noir</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_jour_sacs_noir"
+                                                    data-poste="prealpina-jour">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Autre</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_jour_autre" data-poste="prealpina-jour">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="alert alert-info mb-0">
+                                                <strong>P° de jour (Kg): <span
+                                                        id="total-prealpina-jour">0</span></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Section Horaires -->
+                                    <div class="time-section p-3"
+                                        style="background-color: #fff3cd; border-radius: 0.375rem; border: 1px solid #ffeaa7;">
+                                        <h6 class="mb-3 text-muted">Horaires de travail</h6>
+
+                                       <!-- Heure W -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure W (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="prealpina_jour_heure_w_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="prealpina_jour_heure_w_fin">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 1 + Motif 1 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 1 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_jour_heure_a1_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_jour_heure_a1_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_jour_motif_arret1" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_jour_motif_arret1" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_jour_motif_arret1" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('prealpina_jour_motif_arret1')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 2 + Motif 2 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 2 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_jour_heure_a2_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_jour_heure_a2_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_jour_motif_arret2" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_jour_motif_arret2" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_jour_motif_arret2" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('prealpina_jour_motif_arret2')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </fieldset>
+
+                                <!-- Poste Nuit -->
+                                <fieldset class="border p-3 mb-4">
+                                    <legend class="w-auto px-2" style="font-size: 1rem;">Poste Nuit</legend>
+
+                                    <!-- Section Mesures -->
+                                    <div class="measurements-section p-3 mb-3"
+                                        style="background-color: #f8f9fa; border-radius: 0.375rem; border: 1px solid #dee2e6;">
+                                        <h6 class="mb-3 text-muted">Mesures de production</h6>
+
+                                        <!-- Ligne 1: big bag -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Big Bag
+                                                            Noir</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_nuit_bigbag_noir"
+                                                    data-poste="prealpina-nuit">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Big Bag
+                                                            Blanc</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_nuit_bigbag_blanc"
+                                                    data-poste="prealpina-nuit">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 2: sacs -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Sacs
+                                                            Blanc</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_nuit_sacs_blanc"
+                                                    data-poste="prealpina-nuit">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Sacs
+                                                            Bleu</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_nuit_sacs_bleu"
+                                                    data-poste="prealpina-nuit">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 3: noir -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Sacs
+                                                            Noir</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_nuit_sacs_noir"
+                                                    data-poste="prealpina-nuit">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Autre</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm color-input"
+                                                    step="10" name="prealpina_nuit_autre" data-poste="prealpina-nuit">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="alert alert-info mb-0">
+                                                <strong>P° de nuit (Kg): <span
+                                                        id="total-prealpina-nuit">0</span></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Section Horaires -->
+                                    <div class="time-section p-3"
+                                        style="background-color: #fff3cd; border-radius: 0.375rem; border: 1px solid #ffeaa7;">
+                                        <h6 class="mb-3 text-muted">Horaires de travail</h6>
+
+                                        <!-- Heure W -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Heure W (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="prealpina_nuit_heure_w_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;" name="prealpina_nuit_heure_w_fin">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 1 + Motif 1 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 1 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_nuit_heure_a1_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_nuit_heure_a1_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_nuit_motif_arret1" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_nuit_motif_arret1" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_nuit_motif_arret1" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('prealpina_nuit_motif_arret1')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Heure arrêt 2 + Motif 2 -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Heure arrêt 2 (h)</label>
+                                                <div class="d-flex align-items-center gap-2 gap-md-1"
+                                                    style="flex-wrap: nowrap;">
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_nuit_heure_a2_debut">
+                                                    <span class="mx-1 mx-md-2">>></span>
+                                                    <input type="time" class="form-control form-control-sm"
+                                                        style="width: 120px; min-width: 50px;"
+                                                        name="prealpina_nuit_heure_a2_fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label">Motif</label>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_nuit_motif_arret2" value="arr_mp">
+                                                        <label class="form-check-label">Arr MP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_nuit_motif_arret2" value="arr_mce">
+                                                        <label class="form-check-label">Arr Mce</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="prealpina_nuit_motif_arret2" value="arr_ntt">
+                                                        <label class="form-check-label">Arr Ntt</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="clearRadioGroup('prealpina_nuit_motif_arret2')">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </fieldset>
+
+                                <hr class="my-4">
+
+                                <!-- Champs de purge -->
+                                <div class="row mb-4">
+                                    <div class="col-md-2">
+                                        <label for="prealpina-purge-jour" class="form-label">Purge jour</label>
+                                        <input type="number" class="form-control" name="prealpina_purge_jour" step="10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="prealpina-purge-nuit" class="form-label">Purge nuit</label>
+                                        <input type="number" class="form-control" name="prealpina_purge_nuit" step="10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="prealpina-nc" class="form-label">NC</label>
+                                        <input type="number" class="form-control" name="prealpina_non_conforme"
+                                            step="10">
+                                    </div>
+                                </div>
+
+                                <!-- Boutons -->
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                                            <button type="button" class="btn btn-secondary"
+                                                onclick="setTimeout(() => location.reload(), 100);">Annuler</button>
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="validateAndGoNext()">Suivant</button>
+                                            <button type="button" class="btn btn-warning" onclick="goToNextTab()">Arrêt
+                                                programmé</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Onglet Matière première -->
+                    <div class="tab-pane fade" id="matiere" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <!-- Section Matières premières -->
+                                <fieldset class="border p-3 mb-4">
+                                    <legend class="w-auto px-2" style="font-size: 1rem;">Matières premières</legend>
+
+                                    <!-- Section Mesures -->
+                                    <div class="measurements-section p-3 mb-3"
+                                        style="background-color: #f8f9fa; border-radius: 0.375rem; border: 1px solid #dee2e6;">
+                                        <h6 class="mb-3 text-muted">Mesures de production</h6>
+
+                                        <!-- Ligne 1: Vrac, Agadir -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Vrac</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_vrac">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Agadir</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_agadir">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 2: Fromage, Balle Beurre -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label
+                                                    class="form-label"><small><strong>Fromage</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_fromage">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Balle
+                                                            Beurre</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_balle_beurre">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 3: Marrakech, Paillage -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label
+                                                    class="form-label"><small><strong>Marrakech</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_marrakech">
+                                            </div>
+                                            <div class="col-6">
+                                                <label
+                                                    class="form-label"><small><strong>Paillage</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_paillage">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 4: Serre, Autre -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Serre</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_serre">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Autre</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_autre">
+                                            </div>
+                                        </div>
+
+                                        <!-- Ligne 5: Broyé, Net trié -->
+                                        <div class="row g-2 mb-2">
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Broyé</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_broye">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label"><small><strong>Net
+                                                            trié</strong></small></label>
+                                                <input type="number" class="form-control form-control-sm" step="10"
+                                                    name="matiere_net_trie">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+
+                                <hr class="my-4">
+
+                                <!-- Boutons -->
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <button type="button" class="btn btn-secondary me-2"
+                                            onclick="scrollToTop(); setTimeout(() => location.reload(), 100);">Annuler</button>
+                                        <button type="button" class="btn btn-primary me-2"
+                                            onclick="saveProduction()">Enregistrer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    // Fonction pour sauvegarder la production
+    function saveProduction() {
+        const form = document.getElementById('productionForm');
+        const formData = new FormData(form);
+
+
+        fetch('/production/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Production enregistrée avec succès !');
+                    // Optionnel: réinitialiser le formulaire
+                    // form.reset();
+                } else {
+                    alert('Erreur lors de l\'enregistrement: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'enregistrement');
+            });
+    }
+
+    // Fonction pour effacer une sélection de groupe radio
+    function clearRadioGroup(groupName) {
+        const radioButtons = document.querySelectorAll(`input[type="radio"][name="${groupName}"]`);
+        radioButtons.forEach(radio => {
+            radio.checked = false;
+        });
+    }
+
+    // Fonction pour remonter en haut de la page
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Fonction pour naviguer vers l'onglet suivant
+    function goToNextTab() {
+        const tabs = ['lavage', 'prealpina', 'matiere'];
+        const activeTab = document.querySelector('.nav-link.active').id.replace('-tab', '');
+        const currentIndex = tabs.indexOf(activeTab);
+        const nextIndex = (currentIndex + 1) % tabs.length;
+        const nextTabId = tabs[nextIndex];
+
+        // Activer l'onglet suivant
+        const nextTab = new bootstrap.Tab(document.getElementById(`${nextTabId}-tab`));
+        nextTab.show();
+
+        // Remonter en haut de la page
+        scrollToTop();
+    }
+
+    // Fonction pour valider les champs requis et naviguer vers l'onglet suivant
+    function validateAndGoNext() {
+        const activeTab = document.querySelector('.nav-link.active').id.replace('-tab', '');
+
+        // Validation uniquement pour Lavage et Préalpina
+        if (activeTab === 'lavage' || activeTab === 'prealpina') {
+            const requiredFields = [];
+
+            // Champs communs (en dehors des onglets)
+            const rempliPar = document.getElementById('rempli-par').value.trim();
+            const meteo = document.getElementById('meteo').value.trim();
+
+            if (!rempliPar) requiredFields.push('Rempli par');
+            if (!meteo) requiredFields.push('Météo');
+
+            // Champs spécifiques à l'onglet actif
+            const productionTotale = document.getElementById(`production-totale-${activeTab}`).value.trim();
+            if (!productionTotale) requiredFields.push('Production totale');
+
+            // Vérification de cohérence des totaux
+            if (activeTab === 'lavage' || activeTab === 'prealpina') {
+                const productionTotaleInput = parseFloat(document.querySelector(`input[name="${activeTab}_production_totale"]`).value) || 0;
+                const totalJour = parseFloat(document.getElementById(`total-${activeTab}-jour`).textContent) || 0;
+                const totalNuit = parseFloat(document.getElementById(`total-${activeTab}-nuit`).textContent) || 0;
+
+                if (productionTotaleInput !== (totalJour + totalNuit)) {
+                    requiredFields.push('Total des pesées non cohérents');
+                }
+            }
+
+            // Afficher les erreurs si il y en a
+            if (requiredFields.length > 0) {
+                alert(`Veuillez remplir les champs obligatoires suivants :\n\n• ${requiredFields.join('\n• ')}`);
+                return;
+            }
+        }
+
+        // Si validation OK ou onglet Matière première, naviguer vers l'onglet suivant
+        goToNextTab();
+    }
+
+    // Écouteurs d'événements pour le calcul automatique
+    document.addEventListener('DOMContentLoaded', function () {
+        // Définir la date à hier
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const formattedDate = yesterday.toISOString().split('T')[0]; // Format YYYY-MM-DD
+        const dateInput = document.getElementById('date');
+        if (dateInput) {
+            dateInput.value = formattedDate;
+        }
+
+        // Écouter les changements sur tous les inputs de couleur
+        const colorInputs = document.querySelectorAll('.color-input');
+
+        colorInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                const poste = this.getAttribute('data-poste');
+                calculateTotal(poste);
+            });
+
+            input.addEventListener('blur', function () {
+                const poste = this.getAttribute('data-poste');
+                calculateTotal(poste);
+            });
+        });
+        // Fonction pour calculer automatiquement les totaux
+        function calculateTotal(poste) {
+            const inputs = document.querySelectorAll(`.color-input[data-poste="${poste}"]`);
+            let total = 0;
+
+            inputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                total += value;
+            });
+
+            const totalSpan = document.getElementById(`total-${poste}`);
+            if (totalSpan) {
+                totalSpan.textContent = total.toFixed(2);
+            }
+        }
+        // Calculer les totaux initiaux pour tous les postes
+        calculateTotal('lavage-jour');
+        calculateTotal('lavage-nuit');
+        calculateTotal('prealpina-jour');
+        calculateTotal('prealpina-nuit');
+    });
+</script>
+{% endblock %}

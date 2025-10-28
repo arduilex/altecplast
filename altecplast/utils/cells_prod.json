@@ -1,0 +1,228 @@
+{
+    "row_label": 3,
+    "lavage": [
+        {
+            "id": "prod_jour",
+            "cell": "B9",
+            "unit": "kg"
+        },
+        {
+            "id": "prod_nuit",
+            "cell": "C9",
+            "unit": "kg"
+        },
+        {
+            "id": "prod_total",
+            "cell": "B7",
+            "unit": "kg"
+        },
+        {
+            "id": "heure_w_jour",
+            "cell": "B11",
+            "unit": "h"
+        },
+        {
+            "id": "heure_w_nuit",
+            "cell": "C11",
+            "unit": "h"
+        },
+        {
+            "id": "heure_w_total",
+            "cell": "C7",
+            "unit": "h"
+        },
+        {
+            "id": "kgh_jour",
+            "cell": "B13",
+            "unit": "kg/h"
+        },
+        {
+            "id": "kgh_nuit",
+            "cell": "C13",
+            "unit": "kg/h"
+        },
+        {
+            "id": "kgh_total",
+            "cell": "D9",
+            "unit": "kg/h"
+        },
+        {
+            "id": "arret_mp_jour",
+            "cell": "B15",
+            "unit": "h"
+        },
+        {
+            "id": "arret_mp_nuit",
+            "cell": "C15",
+            "unit": "h"
+        },
+        {
+            "id": "arret_maintenance_jour",
+            "cell": "B17",
+            "unit": "h"
+        },
+        {
+            "id": "arret_maintenance_nuit",
+            "cell": "C17",
+            "unit": "h"
+        },
+        {
+            "id": "arret_nettoyage",
+            "cell": "D7",
+            "unit": "h"
+        },
+        {
+            "id": "purge_jour",
+            "cell": "D13",
+            "unit": "kg"
+        },
+        {
+            "id": "purge_nuit",
+            "cell": "D23",
+            "unit": "kg"
+        },
+        {
+            "id": "total_nc",
+            "cell": "D11",
+            "unit": "kg"
+        }
+    ],
+    "prealpina": [
+        {
+            "id": "prod_jour",
+            "cell": "F9",
+            "unit": "kg"
+        },
+        {
+            "id": "prod_nuit",
+            "cell": "G9",
+            "unit": "kg"
+        },
+        {
+            "id": "prod_total",
+            "cell": "F7",
+            "unit": "kg"
+        },
+        {
+            "id": "heure_w_jour",
+            "cell": "F11",
+            "unit": "h"
+        },
+        {
+            "id": "heure_w_nuit",
+            "cell": "G11",
+            "unit": "h"
+        },
+        {
+            "id": "heure_w_total",
+            "cell": "G7",
+            "unit": "h"
+        },
+        {
+            "id": "kgh_jour",
+            "cell": "F13",
+            "unit": "kg/h"
+        },
+        {
+            "id": "kgh_nuit",
+            "cell": "G13",
+            "unit": "kg/h"
+        },
+        {
+            "id": "kgh_total",
+            "cell": "H9",
+            "unit": "kg/h"
+        },
+        {
+            "id": "arret_mp_jour",
+            "cell": "F15",
+            "unit": "h"
+        },
+        {
+            "id": "arret_mp_nuit",
+            "cell": "G15",
+            "unit": "h"
+        },
+        {
+            "id": "arret_maintenance_jour",
+            "cell": "F17",
+            "unit": "h"
+        },
+        {
+            "id": "arret_maintenance_nuit",
+            "cell": "G17",
+            "unit": "h"
+        },
+        {
+            "id": "arret_nettoyage",
+            "cell": "H7",
+            "unit": "h"
+        },
+        {
+            "id": "purge_jour",
+            "cell": "H13",
+            "unit": "kg"
+        },
+        {
+            "id": "purge_nuit",
+            "cell": "H15",
+            "unit": "kg"
+        },
+        {
+            "id": "total_nc",
+            "cell": "H11",
+            "unit": "kg"
+        }
+    ],
+    "lavage_type": {
+        "nom": "B21:B26",
+        "valeur": "C21:C26",
+        "colors": [
+            "#1A1A1A",
+            "#4B4B4B",
+            "#F8F8F8",
+            "#E0E0E0",
+            "#0057B7",
+            "#6EA8FE"
+        ]
+    },
+    "prealpina_type": {
+        "cols_range_jour": [
+            42,
+            47
+        ],
+        "cols_range_nuit": [
+            57,
+            62
+        ],
+        "row": 2,
+        "colors": [
+            "#2E2E2E",
+            "#F8F8F8",
+            "#E0E0E0",
+            "#6EA8FE",
+            "#4B4B4B",
+            "#BFBFBF"
+        ]
+    },
+    "mp_souple": {
+        "col_start": 74,
+        "col_end": 83,
+        "row": 2
+    },
+    "mp_rigide": {
+        "col_start": 84,
+        "col_end": 98,
+        "row": 2
+    },
+    "mp_broye": {
+        "col_start": 99,
+        "col_end": 113,
+        "row": 2
+    },
+    "mp_densifie": {
+        "col_start": 114,
+        "col_end": 119,
+        "row": 2
+    }
+}

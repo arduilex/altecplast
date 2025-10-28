@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion Dashboard - ALTECPLAST{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h4 class="mb-0">
+                    <i class="fas fa-lock"></i>
+                    Accès Dashboard
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <form method="post" id="loginForm">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="code" class="form-label">
+                            <i class="fas fa-key"></i>
+                            Code d'accès
+                        </label>
+                        <input
+                            type="password"
+                            class="form-control form-control-lg"
+                            id="code"
+                            name="code"
+                            placeholder="Entrez le code d'accès"
+                            value=""
+                            required
+                            autofocus
+                        >
+                        <div class="form-text text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            Veuillez entrer votre code d'accès pour continuer
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Se connecter
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+body {
+    background: #ffffff;
+}
+
+.main-content {
+    background: #ffffff;
+}
+
+.container {
+    padding-top: 2rem;
+}
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Focus sur le champ de saisie
+    document.getElementById('code').focus();
+
+    // Animation de submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+        submitBtn.disabled = true;
+
+        // Petit délai pour l'animation
+        setTimeout(() => {
+            // Le formulaire se soumet naturellement
+        }, 500);
+    });
+
+    // Animation d'erreur si présente
+    {% if error %}
+    const alertElement = document.querySelector('.alert-danger');
+    if (alertElement) {
+        alertElement.style.animation = 'shake 0.5s ease-in-out';
+    }
+    {% endif %}
+});
+
+// Animation CSS pour l'erreur
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

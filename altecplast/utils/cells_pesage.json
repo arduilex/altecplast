@@ -1,0 +1,25 @@
+{
+    "mp": {
+        "sheet_name": "Achats MP",
+        "labels": {
+            "type_pes": 0,
+            "type_prod": 5,
+            "forme": 6,
+            "kg": 13,
+            "mad": 19
+        }
+    },
+    "pf": {
+        "sheet_name": "Sortie PF",
+        "labels": {
+            "type_pes": 0,
+            "type_prod": 5,
+            "forme": 6,
+            "kg": 11,
+            "mad": 17
+        }
+    },
+    "daily_info_value":  [0, 4, 9, 10, 11, 14, 15, 16, 17, 18, 19],
+    "daily_info_unit":  ["", "", "kg", "%", "kg", "", "", "", "", "", ""]
+
+}

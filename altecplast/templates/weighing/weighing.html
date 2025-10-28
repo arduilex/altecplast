@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Pesée - ALTECPLAST{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="d-grid gap-3">
+            <a href="{% url 'referenced_entry' %}" class="btn btn-lg" style="background-color: #dc4691; color: white;">
+                Entrée Référencée
+            </a>
+
+            <a href="{% url 'non_referenced_entry' %}" class="btn btn-primary btn-lg">
+                Entrée Non Référencée
+            </a>
+
+            <a href="{% url 'finished_product_output' %}" class="btn btn-warning btn-lg">
+                Sortie Produit Fini
+            </a>
+
+            <a href="{% url 'finished_product_return' %}" class="btn btn-warning btn-lg">
+                Retour Produit Fini
+            </a>
+
+            <a href="{% url 'waste_output' %}" class="btn btn-success btn-lg">
+                Sortie Déchet
+            </a>
+
+            <a href="{% url 'merchandise_return' %}" class="btn btn-secondary btn-lg">
+                Retour Marchandise
+            </a>
+
+            <a href="{% url 'outsourced_product_output' %}" class="btn btn-lg" style="background-color: #9999FF; color: white;">
+                Sortie Produit (sous-traitance)
+            </a>
+
+            <a href="{% url 'outsourced_product_return' %}" class="btn btn-lg" style="background-color: #00FFFF; color: white;">
+                Retour Produit (sous-traitance)
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - ALTECPLAST{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Section Date et Heure -->
+        <div class="card shadow-lg mb-4">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h1 class="mb-0">Bienvenue sur ALTECPLAST</h1>
+            </div>
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <h2 class="text-primary mb-3" id="current-date"></h2>
+                    <h1 class="display-1 text-dark fw-bold" id="current-time"></h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Pages Disponibles -->
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">Pages Disponibles</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Pesée -->
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'weighing' %}" class="text-decoration-none">
+                            <div class="card h-100 border-primary hover-card">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-primary mb-3">⚖️</div>
+                                    <h5 class="card-title">Pesée</h5>
+                                    <p class="card-text text-muted small">Ajouter une pesées</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Production -->
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'production' %}" class="text-decoration-none">
+                            <div class="card h-100 border-warning hover-card">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-warning mb-3">🏭</div>
+                                    <h5 class="card-title">Production</h5>
+                                    <p class="card-text text-muted small">Ajouter une production</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Dashboard -->
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'dashboard_login' %}" class="text-decoration-none">
+                            <div class="card h-100 border-success hover-card">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-success mb-3">📊</div>
+                                    <h5 class="card-title">Dashboard</h5>
+                                    <p class="card-text text-muted small">Tableaux de bord</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Admin -->
+                    <div class="col-md-6 col-lg-3">
+                        <a href="{% url 'admin' %}" class="text-decoration-none">
+                            <div class="card h-100 border-danger hover-card">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-danger mb-3">⚙️</div>
+                                    <h5 class="card-title">Administration</h5>
+                                    <p class="card-text text-muted small">Paramètres système</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #current-time {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+    }
+</style>
+
+<script>
+    // Fonction pour mettre à jour la date et l'heure
+    function updateDateTime() {
+        const now = new Date();
+
+        // Format de la date : "Lundi 14 Octobre 2025"
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        const dateString = now.toLocaleDateString('fr-FR', options);
+        document.getElementById('current-date').textContent = dateString;
+
+        // Format de l'heure : "14:30:45"
+        const timeString = now.toLocaleTimeString('fr-FR');
+        document.getElementById('current-time').textContent = timeString;
+    }
+
+    // Mettre à jour immédiatement
+    updateDateTime();
+
+    // Mettre à jour toutes les secondes
+    setInterval(updateDateTime, 1000);
+</script>
+{% endblock %}
