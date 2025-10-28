@@ -29,7 +29,7 @@
 
 **Type d'application :** Application web de gestion de production et logistique
 
-**Période de développement :** [À compléter]
+**Période de développement :** 10 aout 2025 au 31 octobre 2025
 
 **Environnement technique :** Application web développée avec le framework Django (Python)
 
@@ -1441,22 +1441,6 @@ Pour éviter les ralentissements si les fichiers Excel sont volumineux :
    │  Marge brute : 58 800 € (20,0%)                    │
    └─────────────────────────────────────────────────────┘
 
-5. VISUALISATION - GRAPHIQUE PRODUCTION QUOTIDIENNE
-   ┌─────────────────────────────────────────────────────┐
-   │  ÉVOLUTION PRODUCTION QUOTIDIENNE                   │
-   ├─────────────────────────────────────────────────────┤
-   │                                                     │
-   │  kg                                                 │
-   │  8000│         ╱╲                  ╱╲              │
-   │  7000│        ╱  ╲      ╱╲        ╱  ╲             │
-   │  6000│       ╱    ╲    ╱  ╲      ╱    ╲            │
-   │  5000│      ╱      ╲  ╱    ╲    ╱      ╲           │
-   │  4000│─────╱────────╲╱──────╲──╱────────╲─────     │
-   │      │  5   10   15   20   25   30                 │
-   │      │                 Jours                        │
-   │                                                     │
-   │  Légende : ─ Noir  ─ Blanc  ─ Bleu                │
-   └─────────────────────────────────────────────────────┘
 
 6. VISUALISATION - TABLEAU STOCKS
    ┌─────────────────────────────────────────────────────┐
@@ -2186,33 +2170,12 @@ sudo certbot --nginx -d kaizen.altecplast.local
 
 ### 11.4 Retour d'Expérience Personnel
 
-*[Section à compléter par le stagiaire]*
 
 **Apports du stage :**
 - Première expérience de développement d'une application complète en autonomie
 - Compréhension d'un environnement industriel réel avec ses contraintes
 - Collaboration avec des équipes non-techniques (formation, écoute des besoins)
 
-**Difficultés rencontrées :**
-- [À compléter : problèmes techniques, solutions trouvées]
-- [Exemple : Gestion de l'encodage Windows-1256 pour compatibilité Excel français]
-
-**Fiertés :**
-- [À compléter : fonctionnalités dont vous êtes particulièrement fier]
-- [Exemple : Système d'auto-complétion AJAX qui réduit drastiquement le temps de saisie]
-
-**Ce que j'aurais fait différemment :**
-- [À compléter : améliorations avec le recul]
-
-### 11.5 Remerciements
-
-*[Section à personnaliser]*
-
-Je tiens à remercier :
-- **[Nom du maître de stage]**, [fonction] chez ALTECPLAST, pour son encadrement et sa disponibilité
-- **L'équipe de production** pour leur patience lors des tests utilisateurs et leurs retours constructifs
-- **[Nom tuteur école]**, tuteur académique, pour ses conseils méthodologiques
-- **Toute l'équipe ALTECPLAST** pour leur accueil et leur confiance
 
 ### 11.6 Annexes
 
@@ -2224,33 +2187,20 @@ Je tiens à remercier :
 - **Bootstrap** : Framework CSS pour design responsive
 - **Gunicorn** : Serveur HTTP Python pour applications WSGI
 
-**Annexe B : Captures d'écran**
-*[À ajouter : screenshots de l'application]*
-
-**Annexe C : Code source significatif**
-*[Extraits de code commentés illustrant les concepts clés]*
-
-**Annexe D : Documentation utilisateur**
-*[Guides d'utilisation pour chaque module]*
-
-**Annexe E : Schémas techniques**
-*[Diagrammes de flux, schémas de base de données, architecture]*
-
 ---
 
 ## FIN DU RAPPORT
 
 **Document rédigé dans le cadre du stage de [Durée] chez ALTECPLAST**
 
-**Date de rédaction :** [À compléter]
+**Date de rédaction :** 20 octobre 2025
 
 **Version :** 1.0
 
-**Auteur :** [Nom du stagiaire]
 
-**Établissement :** [Nom de l'école/université]
+**Établissement :** ICAM
 
-**Formation :** [Nom du diplôme préparé]
+**Formation :** Système Numérique Industriel
 
 ---
 
