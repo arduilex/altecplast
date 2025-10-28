@@ -1,4 +1,4 @@
-# RAPPORT DE STAGE - KAIZEN LITE
+# RAPPORT DE STAGE - Altecplast
 ## Développement d'une Application Web de Gestion de Production et Logistique
 
 ---
@@ -23,7 +23,7 @@
 
 ### 1.1 Identification du Projet
 
-**Nom de l'application :** KAIZEN LITE (Altecplast)
+**Nom de l'application :** Altecplast (Altecplast)
 
 **Entreprise d'accueil :** ALTECPLAST - Entreprise spécialisée dans le recyclage et la transformation de matières plastiques
 
@@ -35,7 +35,7 @@
 
 ### 1.2 Objectif du Projet
 
-KAIZEN LITE est une solution informatique développée pour digitaliser et optimiser la gestion des opérations de production chez ALTECPLAST. L'application permet de :
+Altecplast est une solution informatique développée pour digitaliser et optimiser la gestion des opérations de production chez ALTECPLAST. L'application permet de :
 
 - **Suivre les opérations de pesage** des matières entrantes et sortantes en temps réel
 - **Enregistrer les données de production** de deux lignes de fabrication distinctes
@@ -57,7 +57,7 @@ ALTECPLAST opère dans le secteur du recyclage plastique avec :
 
 ### 2.1 Situation Initiale
 
-Avant le développement de KAIZEN LITE, l'entreprise faisait face à plusieurs défis :
+Avant le développement de Altecplast, l'entreprise faisait face à plusieurs défis :
 
 1. **Saisie manuelle des pesées** - Risques d'erreurs et temps de traitement élevé
 2. **Consolidation difficile des données** - Informations dispersées dans plusieurs fichiers Excel
@@ -1232,7 +1232,7 @@ Pour éviter les ralentissements si les fichiers Excel sont volumineux :
 
 2. ACCÈS À L'APPLICATION
    - Opérateur ouvre le navigateur
-   - Accède à la page d'accueil de KAIZEN LITE
+   - Accède à la page d'accueil de Altecplast
    - Clique sur le bouton "Pesage"
 
 3. SÉLECTION DU TYPE
@@ -1304,7 +1304,7 @@ Pour éviter les ralentissements si les fichiers Excel sont volumineux :
    - Validation avec les chefs d'équipe
 
 2. ACCÈS AU FORMULAIRE
-   - Connexion à KAIZEN LITE
+   - Connexion à Altecplast
    - Clic sur "Production" depuis la page d'accueil
    - Sélection de la date (par défaut : aujourd'hui)
    - Sélection des conditions météo (impact sur séchage)
@@ -1540,10 +1540,10 @@ Pour éviter les ralentissements si les fichiers Excel sont volumineux :
 **Page d'accueil (home.html) :**
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  [Logo Altecplast]        KAIZEN LITE         [Horloge] │
+│  [Logo Altecplast]        Altecplast         [Horloge] │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
-│                  Bienvenue sur KAIZEN LITE              │
+│                  Bienvenue sur Altecplast              │
 │            Gestion de Production - Altecplast           │
 │                                                          │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
@@ -1853,7 +1853,7 @@ sudo mount -t cifs //serveur/partage /mnt/samba -o username=user,password=pass
 **Fichier de service systemd : `/etc/systemd/system/kaizen.service`**
 ```ini
 [Unit]
-Description=Kaizen Lite Django Application
+Description=Altecplast Django Application
 After=network.target
 
 [Service]
@@ -2061,13 +2061,13 @@ sudo certbot --nginx -d kaizen.altecplast.local
 
 #### 11.1.2 Résultats Mesurables
 
-**Avant KAIZEN LITE :**
+**Avant Altecplast :**
 - Temps moyen de saisie pesée : 5-7 minutes
 - Erreurs de saisie : ~15% des enregistrements
 - Consolidation mensuelle : 2 jours de travail manuel
 - Accès aux KPI : Délai de 48h après clôture du mois
 
-**Après KAIZEN LITE :**
+**Après Altecplast :**
 - Temps moyen de saisie pesée : 2-3 minutes (-60%)
 - Erreurs de saisie : ~3% (-80%)
 - Consolidation mensuelle : Automatique (export CSV)
