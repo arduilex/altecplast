@@ -1,4 +1,4 @@
-# RAPPORT DE STAGE - Altecplast
+# RAPPORT - Altecplast
 ## Développement d'une Application Web de Gestion de Production et Logistique
 
 ---
@@ -23,7 +23,7 @@
 
 ### 1.1 Identification du Projet
 
-**Nom de l'application :** Altecplast (Altecplast)
+**Nom de l'application :** Altecplast 
 
 **Entreprise d'accueil :** ALTECPLAST - Entreprise spécialisée dans le recyclage et la transformation de matières plastiques
 
